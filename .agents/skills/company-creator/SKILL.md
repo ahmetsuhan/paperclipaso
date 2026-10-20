@@ -87,15 +87,7 @@ For from-repo companies, infer the pattern from the repo's structure. If skills 
 
 ### Step 3: Read the Spec
 
-Before generating any files, read the normative spec:
-
-```
-docs/companies/companies-spec.md
-```
-
-Also read the quick reference: [references/companies-spec.md](references/companies-spec.md)
-
-And the example: [references/example-company.md](references/example-company.md)
+Before generating any files, read the normative spec (`docs/companies/companies-spec.md`) and the example: [references/example-company.md](references/example-company.md). Use [references/companies-spec.md](references/companies-spec.md) as a quick lookup while writing files; it summarizes the same spec.
 
 ### Step 4: Generate the Package
 
@@ -195,7 +187,7 @@ The `.paperclip.yaml` file is the Paperclip vendor extension. It configures adap
 
 **Do not specify an adapter unless the repo or user context warrants it.** If you don't know what adapter the user wants, omit the adapter block entirely — Paperclip will use its default. Specifying an unknown adapter type causes an import error.
 
-Paperclip's supported adapter types (these are the ONLY valid values):
+Common Paperclip adapter types (the authoritative list is the `type:` entries in `server/src/adapters/registry.ts`; any other value fails import):
 - `claude_local` — Claude Code CLI
 - `codex_local` — Codex CLI
 - `opencode_local` — OpenCode CLI

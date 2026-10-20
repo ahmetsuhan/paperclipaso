@@ -1,13 +1,11 @@
 ---
 name: paperclip-evals
-description: Choose, inspect, validate, and report Paperclip Runner or Product E2E evaluations while preserving evidence, provenance, cost, and failure classification.
+description: Use when a request concerns Paperclip Runner Evals or Product E2E Evals — choosing, inspecting, validating, interpreting, or reporting a run, its evidence, history, or cost.
 ---
 
 # Paperclip evals
 
-Use this skill when a request concerns Paperclip evaluation selection,
-interpretation, evidence, history, or a live run. Read `doc/evals.md` in the
-Paperclip repository first. It defines the two families and their boundaries.
+Read `doc/evals.md` in the Paperclip repository first. It defines the two families and their boundaries.
 
 ## Discover the repository
 

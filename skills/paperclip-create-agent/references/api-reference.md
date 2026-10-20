@@ -15,7 +15,6 @@
 - `GET /api/agents/:agentId/config-revisions`
 - `POST /api/agents/:agentId/config-revisions/:revisionId/rollback`
 - `POST /api/issues/:issueId/approvals`
-- `GET /api/approvals/:approvalId/issues`
 
 Approval collaboration:
 
@@ -84,7 +83,7 @@ Response:
 If company setting disables required approval, `approval` is `null` and the agent is created as `idle`.
 
 `desiredSkills` accepts company skill ids, canonical keys, or a unique slug. The server resolves and stores canonical company skill keys.
-Leave timer heartbeats disabled by default. Only set `runtimeConfig.heartbeat.enabled=true` and include an `intervalSec` when the role truly needs scheduled recurring work or the user explicitly requested it.
+A timer heartbeat (`runtimeConfig.heartbeat.enabled=true`) also needs an `intervalSec`.
 
 ## Approval Lifecycle
 

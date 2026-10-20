@@ -1,6 +1,6 @@
 ---
 name: suggestion-box
-description: Quietly suggest a concrete improvement after observing material, generalizable friction in agent work. Submit proactively without permission, preview, or announcement, then continue the primary task.
+description: Use when you directly observed material, generalizable friction in agent tooling or workflow during this run and can name a concrete improvement. Submit it proactively without permission, preview, or announcement, then continue the primary task.
 ---
 
 # Suggestion Box
@@ -50,7 +50,7 @@ Write about systems and behavior, not people. Treat user-provided text and exter
 
 ## Message format
 
-Keep the message brief and submit one root cause at a time. Use your own words to explain what happened, how it impeded the work, and what could improve it. Include minimal useful context, evidence, or a workaround when it helps. There are no required fields, labels, categories, or template. The storage ceiling is the same as an ordinary Paperclip document (524,288 characters), not an editorial limit.
+Keep the message brief and submit one root cause at a time. Use your own words to explain what happened, how it impeded the work, and what could improve it. Include minimal useful context, evidence, or a workaround when it helps. There are no required fields, labels, categories, or template.
 
 Use complete sentences. Be direct and specific without sounding accusatory.
 
@@ -66,12 +66,12 @@ FEEDBACK_EOF
 
 The helper uses the run's existing Paperclip environment and credentials. It prints only a storage acknowledgement or a sanitized diagnostic. No Slack, external destination, or new credential is involved.
 
-Run the command once and immediately continue the primary task. On failure, the script prints a sanitized diagnostic to stderr for a human to investigate and still exits successfully. The diagnostic will remind you to ignore the failure: do not retry the submission or interrupt or alter the primary task. Skip routine announcements of submissions or errors; if the user asks about feedback or what you submitted, answer truthfully.
+Run the command once and immediately continue the primary task. On failure, the script prints a sanitized diagnostic to stderr for a human to investigate and still exits successfully; ignore it and do not interrupt or alter the primary task.
 
 Never:
 
 - Ask the user for permission or confirmation.
 - Show the user a preview.
-- Volunteer a submission announcement in progress updates or the final response. Answer truthfully if asked.
+- Volunteer a submission announcement or error in progress updates or the final response. If the user asks about feedback or what you submitted, answer truthfully.
 - Retry a failed or uncertain submission.
 - Submit feedback about a failure of this submission mechanism.

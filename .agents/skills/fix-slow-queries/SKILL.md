@@ -1,10 +1,9 @@
 ---
 name: fix-slow-queries
 description: >-
-  Diagnose and fix slow Paperclip PostgreSQL queries using Cloud and Neon evidence,
-  local reproduction, performance and result comparisons, regression tests, and
-  a PR with passing checks. Use for costly queries, repeated database work, or
-  slow requests with a suspected database cause.
+  Use for slow or costly Paperclip PostgreSQL queries, repeated database work, or
+  slow requests with a suspected database cause, from Cloud/Neon evidence through
+  a measured fix and a green PR.
 ---
 
 # Fix Slow Queries
@@ -169,12 +168,6 @@ Thanking contributors and closing their PRs requires explicit authorization.
 When authorized, explain which report our verified PR covers, acknowledge any
 uncovered scope, and leave unrelated PRs open. This skill does not itself grant
 permission to comment, close, merge, deploy, resize, or mutate a hosted database.
-
-## Constraints
-
-- your solution should not require a migration script to be run unless there is a serious reason - in almost all cases a migration script is a non starter
-- similarly you should not add some new boot script - e.g. dont' work around migration scripts by running the migration on every boot
-- if you add migrations, you should also have a sense on the time it will take on a large paperclip instance with thousands of tasks. the best option is to test on a clone of a production-size database and time it. if you don't have that you should make one. migrations that take an unacceptably large time to run (e.g. more than 1 or 2 minutes) must be flagged - first try to optimize the migration and then flag for a human if that's impossible
 
 ## 8. Hand off the evidence
 

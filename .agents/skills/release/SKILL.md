@@ -1,9 +1,9 @@
 ---
 name: release
 description: >
-  Coordinate a full Paperclip release across engineering verification, npm,
-  GitHub, smoke testing, and announcement follow-up. Use when leadership asks
-  to ship a release, not merely to discuss versioning.
+  Use when leadership asks to do or ship a Paperclip release, cut a stable
+  release, or promote a canary to stable (not merely to discuss versioning);
+  covers verification, npm, GitHub, smoke testing, and announcement follow-up.
 ---
 
 # Release Coordination Skill
@@ -20,15 +20,6 @@ This skill coordinates:
 - website / announcement follow-up tasks
 - release-content Cases dogfood: a top-level `release` case with child
   `blog_post` and `tweet_storm` cases, all linked to the release issue/run
-
-## Trigger
-
-Use this skill when leadership asks for:
-
-- "do a release"
-- "ship the release"
-- "promote this canary to stable"
-- "cut the stable release"
 
 ## Preconditions
 

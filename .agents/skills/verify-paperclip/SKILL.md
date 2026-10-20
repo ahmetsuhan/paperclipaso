@@ -1,6 +1,6 @@
 ---
 name: verify-paperclip
-description: Verify Paperclip from a source checkout, published npm install, or existing staging or production stack. Select the environment, data state, version, and platform; drive real UI or CLI journeys and capture evidence. Route deployment to the private Cloud skills.
+description: Use when verifying Paperclip behavior end to end — from a source checkout, a published npm install, or an existing staging or production stack — by driving real UI or CLI journeys and capturing evidence. Routes deployment to the private Cloud skills.
 ---
 
 # Verify Paperclip
@@ -13,7 +13,9 @@ actual permitted agent identity, target and work mode. Follow existing API/runne
 fixtures for access proof; a board request does not prove agent access. Report
 recipe or access drift with evidence; map updates belong to
 [maintain-verification-skill](../maintain-verification-skill/SKILL.md).
-Read [development instructions](../../../doc/DEVELOPING.md) for current commands.
+For commands not shown here, read only the relevant sections of the
+[development instructions](../../../doc/DEVELOPING.md) (for example "Start Dev",
+"Test Commands", "One-Command Local Run").
 
 ## Select the verification target
 
@@ -236,12 +238,6 @@ until no owned process uses it; remove only that exact temporary directory when
 it is no longer useful. Never delete the evidence directory during teardown.
 Confirm screenshots, trace, `result.json`, `launch.json`, and `doctor.json` still
 exist after shutdown. A failed launch leaves its evidence intact.
-
-## Helpers
-
-All helper invocations are shown above. `launch.py`, `doctor.py`, and `stop.py` use Python's
-standard library and the repo CLI; `onboarding-smoke.mjs` uses the repo's existing
-Playwright dependency. They introduce no new package dependency or test framework.
 
 ## Helper safety check
 

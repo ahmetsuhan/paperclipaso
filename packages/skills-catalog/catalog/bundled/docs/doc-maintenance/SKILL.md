@@ -1,6 +1,6 @@
 ---
 name: doc-maintenance
-description: Keep project docs aligned with recent code and feature changes — detect drift, update affected pages, and add release-relevant notes without rewriting unchanged sections.
+description: Use when user-visible behavior changed (flags, APIs, defaults, config, endpoints), docs caused a bug, or a release needs a docs pass — detect drift, update only affected pages, and write release notes.
 key: paperclipai/bundled/docs/doc-maintenance
 recommendedForRoles:
   - engineer
@@ -71,5 +71,3 @@ When you find drift, fix it in the same pass and note it in the release note's `
 
 - Massive doc PRs that bundle stylistic rewrites with real updates. Reviewers cannot tell which lines reflect actual behavior changes.
 - "Updated docs" commit messages with no detail. Make the commit say what changed and why.
-- Adding to the changelog without updating the reference docs the changelog points to.
-- Marking a feature as available before its code lands. Documentation must follow behavior, not promise it.

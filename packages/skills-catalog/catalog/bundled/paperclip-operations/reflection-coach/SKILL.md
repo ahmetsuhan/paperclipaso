@@ -1,6 +1,6 @@
 ---
 name: reflection-coach
-description: Reflect on another agent's recent execution record and propose the smallest durable instruction, skill, or tool-description change. Use for evidence-backed coaching proposals, never hot-swaps.
+description: Use when asked to reflect on, coach, or review another agent's recent execution record and propose the smallest durable AGENTS.md, skill, or tool-description change as an evidence-backed reviewed proposal, never a hot-swap.
 key: paperclipai/bundled/paperclip-operations/reflection-coach
 recommendedForRoles:
   - manager
@@ -37,7 +37,7 @@ Two load-bearing rules: **trajectories, not scores, are load-bearing**, and **ch
 
 Required:
 
-- `targetAgentId` — the agent you are coaching. Never coach yourself.
+- `targetAgentId` — the agent you are coaching.
 - `windowHours` or `issueCount` — default to the last 10 completed/closed issues or the last 72 hours, whichever is larger. Cap at 25 issues to stay within budget.
 
 Optional:
@@ -180,15 +180,6 @@ When the interaction resolves **accepted**, apply the change in a *separate* run
 - **Tool description** — update the target agent's description/profile field that the accepted diff named.
 
 The server rejects Reflection Coach mutations unless the accepted `request_confirmation` was created by Reflection Coach in a previous run, has a displayed diff, and is bound to the resource by one of the target keys above. If the interaction was rejected or is still pending, apply nothing. If you were asked to apply without a reviewed diff and an accepted interaction, refuse and name the gate — no-same-run-apply is load-bearing.
-
-## Pitfalls
-
-- **Scoring without trajectories.** Don't say "failed 3 times" without quoting the failures. Scores alone collapse improvement rate.
-- **Proposing the bigger rewrite.** Your job is the smallest change that would have prevented the cluster. Bigger feels impressive; it isn't.
-- **Duplicating rules the agent already has.** Read `AGENTS.md` + assigned skills first. An existing-but-unfollowed rule is a "make it stick" proposal, not a restatement.
-- **Applying in the discovery run.** Even with permission, discovery and application are separate runs behind an accepted interaction.
-- **Silently expanding scope.** The +20% cap exists because every new rule competes for attention. Four small proposals beat one big rewrite.
-- **Promising runtime value.** You are not improving the agent mid-session. This is offline, diff-reviewed, interaction-gated.
 
 ## Verification (self-check before publishing)
 

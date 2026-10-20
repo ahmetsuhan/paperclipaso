@@ -1,10 +1,10 @@
 ---
 name: create-paperclip-bundled-skill
 description: >
-  Turn an idea, tweet, or task into a skill in the Paperclip skills catalog
-  (packages/skills-catalog). Use when asked to FIND or MAKE a skill and publish
-  it as a bundled/optional catalog skill: research prior art, reference or
-  author it, add examples, regenerate the manifest, open a PR.
+  Use when asked to FIND or MAKE a skill for the Paperclip skills catalog
+  (packages/skills-catalog) from an idea, tweet, or task, as a bundled/optional
+  catalog skill or external reference. Not for company-private or repo-internal
+  skills.
 ---
 
 # Create a Paperclip Bundled Skill
@@ -191,7 +191,8 @@ company should get), `requires: [node, python3, ...]` for runtime deps.
 Body: follow `docs/guides/agent-developer/writing-a-skill.md` — "When to use"
 / "When not to use" sections, concrete commands over prose, supporting detail
 in `references/`. If the skill came from a tweet or external source, link it
-in the body for attribution.
+in the body for attribution. Worked run: `examples/new-local-skill.md` next to
+this skill.
 
 Trust level is derived from files, not declared: any `scripts/` file makes the
 skill `scripts_executables` (install becomes audit-gated and you must extend

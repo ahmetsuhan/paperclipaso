@@ -1,8 +1,10 @@
 ---
 name: release-changelog
 description: >
-  Generate the stable Paperclip release changelog at releases/vYYYY.MDD.P.md by
-  reading commits, changesets, and merged PR context since the last stable tag.
+  Use when drafting, updating, or reviewing the stable Paperclip release
+  changelog (beta-keyed `releases/beta/v{beta-version}.md` or
+  `releases/vYYYY.MDD.P.md`), including when the release skill reaches its
+  changelog step.
 ---
 
 # Release Changelog Skill
@@ -110,7 +112,6 @@ The stable version comes from one of:
 - the release plan already agreed in `doc/RELEASING.md`
 
 Do not derive the changelog version from a canary tag or prerelease suffix.
-Do not derive major/minor/patch bumps from API intent — calver uses the date and same-day stable slot.
 
 ## Step 2 — Gather the Raw Inputs
 
@@ -123,7 +124,6 @@ Collect release data from:
 Useful commands:
 
 ```bash
-git log v{last}..{beta-src} --oneline --no-merges
 git log v{last}..{beta-src} --format="%H %s" --no-merges
 ls .changeset/*.md | grep -v README.md
 gh pr list --state merged --search "merged:>={last-tag-date}" --json number,title,body,labels

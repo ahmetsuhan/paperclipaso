@@ -54,14 +54,10 @@ git log "$LAST_SHA"..HEAD --oneline --no-merges
 
 ### Step 2 — Classify changes
 
-Scan commit messages and changed files. Categorize into:
-
-- **Feature** — new capabilities (keywords: `feat`, `add`, `implement`, `support`)
-- **Breaking** — removed/renamed things (keywords: `remove`, `breaking`, `drop`, `rename`)
-- **Structural** — new directories, config changes, new adapters, new CLI commands
-
-**Ignore:** refactors, test-only changes, CI config, dependency bumps, doc-only
-changes, style/formatting commits. These don't affect doc accuracy.
+Scan commit messages and changed files and categorize them with the
+[Change Classification Rules](#change-classification-rules) table below
+(Structural also covers new adapters and CLI commands). Ignore refactors,
+test-only, CI, dependency, doc-only, and style commits.
 
 For borderline cases, check the actual diff — a commit titled "refactor: X"
 that adds a new public API is a feature.

@@ -1,9 +1,9 @@
 ---
 name: para-memory-files
 description: >
-  Use a file-based PARA memory system to store, retrieve, and organize durable
-  knowledge across sessions. Trigger on saving facts, daily notes, entity
-  records, weekly synthesis, recall, tacit user patterns, or plan memory.
+  Use when saving or recalling durable knowledge across sessions in the
+  file-based PARA memory under $AGENT_HOME: facts, daily notes, entity records,
+  weekly synthesis, recall, tacit user patterns, or plan memory.
 ---
 
 # PARA Memory Files
@@ -33,13 +33,6 @@ $AGENT_HOME/life/
   archives/          # Inactive items from the other three
   index.md
 ```
-
-**PARA rules:**
-
-- **Projects** -- active work with a goal or deadline. Move to archives when complete.
-- **Areas** -- ongoing (people, companies, responsibilities). No end date.
-- **Resources** -- reference material, topics of interest.
-- **Archives** -- inactive items from any category.
 
 **Fact rules:**
 
@@ -79,7 +72,6 @@ Memory does not survive session restarts. Files do.
 - "Remember this" -> update `$AGENT_HOME/memory/YYYY-MM-DD.md` or the relevant entity file.
 - Learn a lesson -> update AGENTS.md, TOOLS.md, or the relevant skill file.
 - Make a mistake -> document it so future-you does not repeat it.
-- On-disk text files are always better than holding it in temporary context.
 
 ## Memory Recall -- Use qmd
 
@@ -91,10 +83,8 @@ qmd search "specific phrase"              # BM25 keyword search
 qmd vsearch "conceptual question"         # Pure vector similarity
 ```
 
-Index your personal folder: `qmd index $AGENT_HOME`
-
-Vectors + BM25 + reranking finds things even when the wording differs.
+Index your personal folder: `qmd index $AGENT_HOME`. If `qmd` is not installed, search with `rg`; do not install it just for recall.
 
 ## Planning
 
-Keep plans in timestamped files in `plans/` at the project root (outside personal memory so other agents can access them). Use `qmd` to search plans. Plans go stale -- if a newer plan exists, do not confuse yourself with an older version. If you notice staleness, update the file to note what it is supersededBy.
+Plans for a Paperclip task belong in that issue's `plan` document (see the `paperclip` skill). Keep other plans in timestamped files in `plans/` at the project root (outside personal memory so other agents can access them). Use `qmd` to search plans. Plans go stale -- if a newer plan exists, do not confuse yourself with an older version. If you notice staleness, update the file to note what it is supersededBy.

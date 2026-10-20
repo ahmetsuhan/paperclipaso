@@ -1,6 +1,6 @@
 ---
 name: prepare-paperclip-pr
-description: Prepare a Paperclip branch for PR with commits, template body, and checks.
+description: Use when turning Paperclip branch work into a pull request against paperclipai/paperclip master, or re-preparing an existing PR (commits, rebase, template body, Greptile and CI loops).
 ---
 # Prepare Paperclip PR
 
@@ -33,8 +33,10 @@ each one).
 
 * Fetch the target remote and rebase (or otherwise replay) your branch on top
   of the target master so the PR has no merge conflicts.
-* Re-verify after rebase: build/tests relevant to the change still pass at
-  whatever depth the task warrants.
+* Re-verify after rebase per root `AGENTS.md` §7: targeted checks for the
+  change first; the full `pnpm -r typecheck && pnpm test:run && pnpm build`
+  gate only for a PR-ready hand-off or a broad change. Browser suites stay
+  opt-in.
 
 ## 3. Guardrails checklist (every PR)
 
@@ -54,7 +56,8 @@ each one).
 
 * Follow `CONTRIBUTING.md` (repo root,
   https://github.com/paperclipai/paperclip/blob/master/CONTRIBUTING.md) for
-  the PR title, message format, and issue description.
+  the PR title, message format, and issue description, and fill every section
+  of `.github/PULL_REQUEST_TEMPLATE.md` in the PR body (including Model Used).
 * Push the branch and open the PR with `gh`.
 * Record the PR URL immediately — every report must include URLs to every PR.
 
@@ -65,8 +68,8 @@ each one).
   comments** (max 20 turns). Do not stop early while turns remain.
 * Then run the **/prcheckloop** company skill and address any verification /
   CI failures you can.
-* RUN GREPTILE UNTIL IT GETS TO 5/5 - DO NOT STOP UNTIL GREPTILE IS 5/5, all
-  tests pass, all verification checks pass, and there are no merge conflicts.
+* Done means Greptile 5/5, all tests and verification checks pass, and no
+  merge conflicts.
 
 ## 6. Report back and hand off
 
