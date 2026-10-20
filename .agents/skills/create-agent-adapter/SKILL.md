@@ -3,12 +3,22 @@ name: create-agent-adapter
 description: >
   Create or modify Paperclip agent adapters across server, UI, and CLI surfaces.
   Use when adding support for a new CLI agent, API agent, custom process, or
-  adapter package.
+  adapter package. Native Paperclip Runner harnesses use create-runner-adapter.
 ---
 
 # Creating a Paperclip Agent Adapter
 
 An adapter bridges Paperclip's orchestration layer to a specific AI agent runtime (Claude Code, Codex CLI, a custom process, an HTTP endpoint, etc.). Each adapter is a self-contained package that provides implementations for **three consumers**: the server, the UI, and the CLI.
+
+Read the reference file the current step needs instead of loading all of them:
+
+- [references/interfaces.md](references/interfaces.md): adapter-utils types,
+  environment-test types, injected env vars, server-utils helpers, and
+  TranscriptEntry kinds.
+- [references/templates.md](references/templates.md): package.json, metadata,
+  server/UI/CLI module skeletons, registry snippets, and the session-resume pattern.
+- [references/skills-injection.md](references/skills-injection.md): how
+  claude-local and codex-local inject Paperclip skills, with code.
 
 ---
 
@@ -45,108 +55,13 @@ Three separate registries consume adapter modules:
 
 ## 2. Shared Types (`@paperclipai/adapter-utils`)
 
-All adapter interfaces live in `packages/adapter-utils/src/types.ts`. Import from `@paperclipai/adapter-utils` (types) or `@paperclipai/adapter-utils/server-utils` (runtime helpers).
-
-### Core Interfaces
-
-```ts
-// The execute function signature — every adapter must implement this
-interface AdapterExecutionContext {
-  runId: string;
-  agent: AdapterAgent;          // { id, companyId, name, adapterType, adapterConfig }
-  runtime: AdapterRuntime;      // { sessionId, sessionParams, sessionDisplayId, taskKey }
-  config: Record<string, unknown>;  // The agent's adapterConfig blob
-  context: Record<string, unknown>; // Runtime context (taskId, wakeReason, approvalId, etc.)
-  onLog: (stream: "stdout" | "stderr", chunk: string) => Promise<void>;
-  onMeta?: (meta: AdapterInvocationMeta) => Promise<void>;
-  authToken?: string;
-}
-
-interface AdapterExecutionResult {
-  exitCode: number | null;
-  signal: string | null;
-  timedOut: boolean;
-  errorMessage?: string | null;
-  usage?: UsageSummary;           // { inputTokens, outputTokens, cachedInputTokens? }
-  sessionId?: string | null;      // Legacy — prefer sessionParams
-  sessionParams?: Record<string, unknown> | null;  // Opaque session state persisted between runs
-  sessionDisplayId?: string | null;
-  provider?: string | null;       // "anthropic", "openai", etc.
-  model?: string | null;
-  costUsd?: number | null;
-  resultJson?: Record<string, unknown> | null;
-  summary?: string | null;        // Human-readable summary of what the agent did
-  clearSession?: boolean;         // true = tell Paperclip to forget the stored session
-}
-
-interface AdapterSessionCodec {
-  deserialize(raw: unknown): Record<string, unknown> | null;
-  serialize(params: Record<string, unknown> | null): Record<string, unknown> | null;
-  getDisplayId?(params: Record<string, unknown> | null): string | null;
-}
-```
-
-### Module Interfaces
-
-```ts
-// Server — registered in server/src/adapters/registry.ts
-interface ServerAdapterModule {
-  type: string;
-  execute(ctx: AdapterExecutionContext): Promise<AdapterExecutionResult>;
-  testEnvironment(ctx: AdapterEnvironmentTestContext): Promise<AdapterEnvironmentTestResult>;
-  sessionCodec?: AdapterSessionCodec;
-  supportsLocalAgentJwt?: boolean;
-  models?: { id: string; label: string }[];
-  agentConfigurationDoc?: string;
-}
-
-// UI — registered in ui/src/adapters/registry.ts
-interface UIAdapterModule {
-  type: string;
-  label: string;
-  parseStdoutLine: (line: string, ts: string) => TranscriptEntry[];
-  ConfigFields: ComponentType<AdapterConfigFieldsProps>;
-  buildAdapterConfig: (values: CreateConfigValues) => Record<string, unknown>;
-}
-
-// CLI — registered in cli/src/adapters/registry.ts
-interface CLIAdapterModule {
-  type: string;
-  formatStdoutEvent: (line: string, debug: boolean) => void;
-}
-```
+All adapter interfaces live in `packages/adapter-utils/src/types.ts`. Import from `@paperclipai/adapter-utils` (types) or `@paperclipai/adapter-utils/server-utils` (runtime helpers). The core execution, session-codec, and server/UI/CLI module interfaces are in [references/interfaces.md](references/interfaces.md).
 
 ---
 
 ## 2.1 Adapter Environment Test Contract
 
-Every server adapter must implement `testEnvironment(...)`. This powers the board UI "Test environment" button in agent configuration.
-
-```ts
-type AdapterEnvironmentCheckLevel = "info" | "warn" | "error";
-type AdapterEnvironmentTestStatus = "pass" | "warn" | "fail";
-
-interface AdapterEnvironmentCheck {
-  code: string;
-  level: AdapterEnvironmentCheckLevel;
-  message: string;
-  detail?: string | null;
-  hint?: string | null;
-}
-
-interface AdapterEnvironmentTestResult {
-  adapterType: string;
-  status: AdapterEnvironmentTestStatus;
-  checks: AdapterEnvironmentCheck[];
-  testedAt: string; // ISO timestamp
-}
-
-interface AdapterEnvironmentTestContext {
-  companyId: string;
-  adapterType: string;
-  config: Record<string, unknown>; // runtime-resolved adapterConfig
-}
-```
+Every server adapter must implement `testEnvironment(...)`. This powers the board UI "Test environment" button in agent configuration. The result and check types are in [references/interfaces.md](references/interfaces.md).
 
 Guidelines:
 
@@ -164,63 +79,13 @@ Example: for `claude_local`, an explicitly configured `ANTHROPIC_API_KEY` or sel
 
 ### 3.1 Create the Package
 
-```
-packages/adapters/<name>/
-  package.json
-  tsconfig.json
-  src/
-    index.ts
-    server/index.ts
-    server/execute.ts
-    server/parse.ts
-    ui/index.ts
-    ui/parse-stdout.ts
-    ui/build-config.ts
-    cli/index.ts
-    cli/format-event.ts
-```
+Create the layout shown in section 1.
 
-**package.json** — must use the four-export convention:
-
-```json
-{
-  "name": "@paperclipai/adapter-<name>",
-  "version": "0.0.1",
-  "private": true,
-  "type": "module",
-  "exports": {
-    ".": "./src/index.ts",
-    "./server": "./src/server/index.ts",
-    "./ui": "./src/ui/index.ts",
-    "./cli": "./src/cli/index.ts"
-  },
-  "dependencies": {
-    "@paperclipai/adapter-utils": "workspace:*",
-    "picocolors": "^1.1.1"
-  },
-  "devDependencies": {
-    "typescript": "^5.7.3"
-  }
-}
-```
+**package.json** — must use the four-export convention (`.`, `./server`, `./ui`, `./cli`); see [references/templates.md](references/templates.md).
 
 ### 3.2 Root `index.ts` — Adapter Metadata
 
 This file is imported by **all three** consumers (server, UI, CLI). Keep it dependency-free (no Node APIs, no React).
-
-```ts
-export const type = "my_agent";        // snake_case, globally unique
-export const label = "My Agent (local)";
-
-export const models = [
-  { id: "model-a", label: "Model A" },
-  { id: "model-b", label: "Model B" },
-];
-
-export const agentConfigurationDoc = `# my_agent agent configuration
-...document all config fields here...
-`;
-```
 
 **Required exports:**
 - `type` — the adapter type key, stored in `agents.adapter_type`
@@ -232,26 +97,7 @@ export const agentConfigurationDoc = `# my_agent agent configuration
 
 The `agentConfigurationDoc` is read by LLM agents (including Paperclip agents that create other agents). Write it as **routing logic**, not marketing copy. Include concrete "use when" and "don't use when" guidance so an LLM can decide whether this adapter is appropriate for a given task.
 
-```ts
-export const agentConfigurationDoc = `# my_agent agent configuration
-
-Adapter: my_agent
-
-Use when:
-- The agent needs to run MyAgent CLI locally on the host machine
-- You need session persistence across runs (MyAgent supports thread resumption)
-- The task requires MyAgent-specific tools (e.g. web search, code execution)
-
-Don't use when:
-- You need a simple one-shot script execution (use the "process" adapter instead)
-- The agent doesn't need conversational context between runs (process adapter is simpler)
-- MyAgent CLI is not installed on the host
-
-Core fields:
-- cwd (string, required): absolute working directory for the agent process
-...
-`;
-```
+See the worked example in [references/templates.md](references/templates.md).
 
 Adding explicit negative cases improves adapter selection accuracy. One concrete anti-pattern is worth more than three paragraphs of description.
 
@@ -273,21 +119,7 @@ This is the most important file. It receives an `AdapterExecutionContext` and mu
 8. **Handle session errors** — if resume fails with "unknown session", retry with a fresh session and set `clearSession: true`
 9. **Return AdapterExecutionResult** — populate all fields the agent runtime supports
 
-**Environment variables the server always injects:**
-
-| Variable | Source |
-|----------|--------|
-| `PAPERCLIP_AGENT_ID` | `agent.id` |
-| `PAPERCLIP_COMPANY_ID` | `agent.companyId` |
-| `PAPERCLIP_API_URL` | Server's own URL |
-| `PAPERCLIP_RUN_ID` | Current run id |
-| `PAPERCLIP_TASK_ID` | `context.taskId` or `context.issueId` |
-| `PAPERCLIP_WAKE_REASON` | `context.wakeReason` |
-| `PAPERCLIP_WAKE_COMMENT_ID` | `context.wakeCommentId` or `context.commentId` |
-| `PAPERCLIP_APPROVAL_ID` | `context.approvalId` |
-| `PAPERCLIP_APPROVAL_STATUS` | `context.approvalStatus` |
-| `PAPERCLIP_LINKED_ISSUE_IDS` | `context.issueIds` (comma-separated) |
-| `PAPERCLIP_API_KEY` | `authToken` (if no explicit key in config) |
+The `PAPERCLIP_*` variables the server always injects are listed in [references/interfaces.md](references/interfaces.md).
 
 #### `server/parse.ts` — Output Parser
 
@@ -308,18 +140,7 @@ Parse the agent's stdout format into structured data. Must handle:
 
 #### `server/index.ts` — Server Exports
 
-```ts
-export { execute } from "./execute.js";
-export { testEnvironment } from "./test.js";
-export { parseMyAgentOutput, isMyAgentUnknownSessionError } from "./parse.js";
-
-// Session codec — required for session persistence
-export const sessionCodec: AdapterSessionCodec = {
-  deserialize(raw) { /* raw DB JSON -> typed params or null */ },
-  serialize(params) { /* typed params -> JSON for DB storage */ },
-  getDisplayId(params) { /* -> human-readable session id string */ },
-};
-```
+Export `execute`, `testEnvironment`, the parse helpers, and a `sessionCodec` (required for session persistence); see [references/templates.md](references/templates.md).
 
 #### `server/test.ts` — Environment Diagnostics
 
@@ -352,29 +173,11 @@ Converts individual stdout lines into `TranscriptEntry[]` for the run detail vie
 - `result` — final result with usage stats
 - `stdout` — fallback for unparseable lines
 
-```ts
-export function parseMyAgentStdoutLine(line: string, ts: string): TranscriptEntry[] {
-  // Parse JSON line, map to appropriate TranscriptEntry kind(s)
-  // Return [{ kind: "stdout", ts, text: line }] as fallback
-}
-```
+Return `[{ kind: "stdout", ts, text: line }]` for those lines.
 
 #### `ui/build-config.ts` — Config Builder
 
 Converts the UI form's `CreateConfigValues` into the `adapterConfig` JSON blob stored on the agent.
-
-```ts
-export function buildMyAgentConfig(v: CreateConfigValues): Record<string, unknown> {
-  const ac: Record<string, unknown> = {};
-  if (v.cwd) ac.cwd = v.cwd;
-  if (v.promptTemplate) ac.promptTemplate = v.promptTemplate;
-  if (v.model) ac.model = v.model;
-  ac.timeoutSec = 0;
-  ac.graceSec = 15;
-  // ... adapter-specific fields
-  return ac;
-}
-```
 
 #### UI Config Fields Component
 
@@ -395,82 +198,15 @@ The component must support both `create` mode (using `values`/`set`) and `edit` 
 
 Pretty-prints stdout lines for `paperclipai run --watch`. Use `picocolors` for coloring.
 
-```ts
-import pc from "picocolors";
-
-export function printMyAgentStreamEvent(raw: string, debug: boolean): void {
-  // Parse JSON line from agent stdout
-  // Print colored output: blue for system, green for assistant, yellow for tools
-  // In debug mode, print unrecognized lines in gray
-}
-```
-
 ---
 
 ## 4. Registration Checklist
 
-After creating the adapter package, register it in all three consumers:
+After creating the adapter package, register it in all three consumers. Snippets for each are in [references/templates.md](references/templates.md):
 
-### 4.1 Server Registry (`server/src/adapters/registry.ts`)
-
-```ts
-import { execute as myExecute, sessionCodec as mySessionCodec } from "@paperclipai/adapter-my-agent/server";
-import { agentConfigurationDoc as myDoc, models as myModels } from "@paperclipai/adapter-my-agent";
-
-const myAgentAdapter: ServerAdapterModule = {
-  type: "my_agent",
-  execute: myExecute,
-  sessionCodec: mySessionCodec,
-  models: myModels,
-  supportsLocalAgentJwt: true,  // true if agent can use Paperclip API
-  agentConfigurationDoc: myDoc,
-};
-
-// Add to the adaptersByType map
-const adaptersByType = new Map<string, ServerAdapterModule>(
-  [..., myAgentAdapter].map((a) => [a.type, a]),
-);
-```
-
-### 4.2 UI Registry (`ui/src/adapters/registry.ts`)
-
-```ts
-import { myAgentUIAdapter } from "./my-agent";
-
-const adaptersByType = new Map<string, UIAdapterModule>(
-  [..., myAgentUIAdapter].map((a) => [a.type, a]),
-);
-```
-
-With `ui/src/adapters/my-agent/index.ts`:
-
-```ts
-import type { UIAdapterModule } from "../types";
-import { parseMyAgentStdoutLine } from "@paperclipai/adapter-my-agent/ui";
-import { MyAgentConfigFields } from "./config-fields";
-import { buildMyAgentConfig } from "@paperclipai/adapter-my-agent/ui";
-
-export const myAgentUIAdapter: UIAdapterModule = {
-  type: "my_agent",
-  label: "My Agent",
-  parseStdoutLine: parseMyAgentStdoutLine,
-  ConfigFields: MyAgentConfigFields,
-  buildAdapterConfig: buildMyAgentConfig,
-};
-```
-
-### 4.3 CLI Registry (`cli/src/adapters/registry.ts`)
-
-```ts
-import { printMyAgentStreamEvent } from "@paperclipai/adapter-my-agent/cli";
-
-const myAgentCLIAdapter: CLIAdapterModule = {
-  type: "my_agent",
-  formatStdoutEvent: printMyAgentStreamEvent,
-};
-
-// Add to the adaptersByType map
-```
+- `server/src/adapters/registry.ts` — a `ServerAdapterModule` with `execute`, `sessionCodec`, `models`, `supportsLocalAgentJwt`, and `agentConfigurationDoc`, added to `adaptersByType`.
+- `ui/src/adapters/registry.ts` — a `UIAdapterModule` assembled in `ui/src/adapters/<name>/index.ts`.
+- `cli/src/adapters/registry.ts` — a `CLIAdapterModule` with `formatStdoutEvent`.
 
 ---
 
@@ -490,44 +226,13 @@ Sessions allow agents to maintain conversation context across runs. The system i
 
 If the agent runtime supports any form of context compaction or conversation compression (e.g. Claude Code's automatic context management, or Codex's `previous_response_id` chaining), lean on it. Adapters that support session resume get compaction for free — the agent runtime handles context window management internally across resumes.
 
-**Pattern** (from both claude-local and codex-local):
-
-```ts
-const canResumeSession =
-  runtimeSessionId.length > 0 &&
-  (runtimeSessionCwd.length === 0 || path.resolve(runtimeSessionCwd) === path.resolve(cwd));
-const sessionId = canResumeSession ? runtimeSessionId : null;
-
-// ... run attempt ...
-
-// If resume failed with unknown session, retry fresh
-if (sessionId && !proc.timedOut && exitCode !== 0 && isUnknownSessionError(output)) {
-  const retry = await runAttempt(null);
-  return toResult(retry, { clearSessionOnMissingSession: true });
-}
-```
+**Pattern** (from both claude-local and codex-local): resume only when the stored cwd matches, and retry fresh with `clearSessionOnMissingSession` when resume reports an unknown session. Code is in [references/templates.md](references/templates.md).
 
 ---
 
 ## 6. Server-Utils Helpers
 
-Import from `@paperclipai/adapter-utils/server-utils`:
-
-| Helper | Purpose |
-|--------|---------|
-| `asString(val, fallback)` | Safe string extraction |
-| `asNumber(val, fallback)` | Safe number extraction |
-| `asBoolean(val, fallback)` | Safe boolean extraction |
-| `asStringArray(val)` | Safe string array extraction |
-| `parseObject(val)` | Safe `Record<string, unknown>` extraction |
-| `parseJson(str)` | Safe JSON.parse returning `Record` or null |
-| `renderTemplate(tmpl, data)` | `{{path.to.value}}` template rendering |
-| `buildPaperclipEnv(agent)` | Standard `PAPERCLIP_*` env vars |
-| `redactEnvForLogs(env)` | Redact sensitive keys for onMeta |
-| `ensureAbsoluteDirectory(cwd)` | Validate cwd exists and is absolute |
-| `ensureCommandResolvable(cmd, cwd, env)` | Validate command is in PATH |
-| `ensurePathInEnv(env)` | Ensure PATH exists in env |
-| `runChildProcess(runId, cmd, args, opts)` | Spawn with timeout, logging, capture |
+Import safe extraction, template, env, validation, and process helpers from `@paperclipai/adapter-utils/server-utils`; the table is in [references/interfaces.md](references/interfaces.md).
 
 ---
 
@@ -567,56 +272,7 @@ Paperclip ships shared skills (in the repo's top-level `skills/` directory) that
 
 **The pattern:** create a clean, isolated location for skills and tell the agent runtime to look there.
 
-**How claude-local does it:**
-
-1. At execution time, create a fresh tmpdir: `mkdtemp("paperclip-skills-")`
-2. Inside it, create `.claude/skills/` (the directory structure Claude Code expects)
-3. Symlink each skill directory from the repo's `skills/` into the tmpdir's `.claude/skills/`
-4. Pass the tmpdir to Claude Code via `--add-dir <tmpdir>` — this makes Claude Code discover the skills as if they were registered in that directory, without touching the agent's actual cwd
-5. Clean up the tmpdir in a `finally` block after the run completes
-
-```ts
-// From claude-local execute.ts
-async function buildSkillsDir(): Promise<string> {
-  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "paperclip-skills-"));
-  const target = path.join(tmp, ".claude", "skills");
-  await fs.mkdir(target, { recursive: true });
-  const entries = await fs.readdir(PAPERCLIP_SKILLS_DIR, { withFileTypes: true });
-  for (const entry of entries) {
-    if (entry.isDirectory()) {
-      await fs.symlink(
-        path.join(PAPERCLIP_SKILLS_DIR, entry.name),
-        path.join(target, entry.name),
-      );
-    }
-  }
-  return tmp;
-}
-
-// In execute(): pass --add-dir to Claude Code
-const skillsDir = await buildSkillsDir();
-args.push("--add-dir", skillsDir);
-// ... run process ...
-// In finally: fs.rm(skillsDir, { recursive: true, force: true })
-```
-
-**How codex-local does it:**
-
-Codex has a global personal skills directory (`$CODEX_HOME/skills` or `~/.codex/skills`). The adapter symlinks Paperclip skills there if they don't already exist. This is acceptable because it's the agent tool's own config directory, not the user's project.
-
-```ts
-// From codex-local execute.ts
-async function ensureCodexSkillsInjected(onLog) {
-  const skillsHome = path.join(codexHomeDir(), "skills");
-  await fs.mkdir(skillsHome, { recursive: true });
-  for (const entry of entries) {
-    const target = path.join(skillsHome, entry.name);
-    const existing = await fs.lstat(target).catch(() => null);
-    if (existing) continue;  // Don't overwrite user's own skills
-    await fs.symlink(source, target);
-  }
-}
-```
+**Examples:** claude-local uses a tmpdir + `--add-dir`; codex-local symlinks into its own global skills home and skips existing entries. Code is in [references/skills-injection.md](references/skills-injection.md).
 
 **For a new adapter:** figure out how your agent runtime discovers skills/plugins, then choose the cleanest injection path:
 
@@ -637,7 +293,7 @@ Adapters sit at the boundary between Paperclip's orchestration layer and arbitra
 
 ### Treat Agent Output as Untrusted
 
-The agent process runs LLM-driven code that reads external files, fetches URLs, and executes tools. Its output may be influenced by prompt injection from the content it processes. The adapter's parse layer is a trust boundary — validate everything, execute nothing.
+The agent process runs LLM-driven code that reads external files, fetches URLs, and executes tools. Its output may be influenced by prompt injection from the content it processes. The adapter's parse layer is a trust boundary — validate everything, execute nothing (see `server/parse.ts` above).
 
 ### Secret Injection via Environment, Not Prompts
 
@@ -667,20 +323,7 @@ If your agent runtime supports network access controls (sandboxing, allowlists),
 
 ## 9. TranscriptEntry Kinds Reference
 
-The UI run viewer displays these entry kinds:
-
-| Kind | Fields | Usage |
-|------|--------|-------|
-| `init` | `model`, `sessionId` | Agent initialization |
-| `assistant` | `text` | Agent text response |
-| `thinking` | `text` | Agent reasoning/thinking |
-| `user` | `text` | User message |
-| `tool_call` | `name`, `input` | Tool invocation |
-| `tool_result` | `toolUseId`, `content`, `isError` | Tool result |
-| `result` | `text`, `inputTokens`, `outputTokens`, `cachedTokens`, `costUsd`, `subtype`, `isError`, `errors` | Final result with usage |
-| `stderr` | `text` | Stderr output |
-| `system` | `text` | System messages |
-| `stdout` | `text` | Raw stdout fallback |
+The full kinds/fields table is in [references/interfaces.md](references/interfaces.md).
 
 ---
 
@@ -692,6 +335,8 @@ Create tests in `server/src/__tests__/<adapter-name>-adapter.test.ts`. Test:
 2. **Unknown session detection** — verify the `is<Agent>UnknownSessionError` function
 3. **Config building** — verify `buildConfig` produces correct adapterConfig from form values
 4. **Session codec** — verify serialize/deserialize round-trips
+
+Run only the new adapter test file and `pnpm --filter @paperclipai/adapter-<name> typecheck` while iterating; leave repo-wide checks for the PR-ready hand-off described in `AGENTS.md`.
 
 ---
 

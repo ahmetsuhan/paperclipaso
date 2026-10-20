@@ -1,10 +1,10 @@
 ---
 name: pr-gardening
 description: >
-  Discover the pull requests this Paperclip instance opened (never community
-  contributions), report what each is for and how confident we are that it is
-  merge-ready, and automatically drive the non-ready ones back to green with
-  /prepare-paperclip-pr — without ever merging.
+  Use when asked to garden, triage, or report merge readiness of the pull
+  requests this Paperclip instance opened (never community contributions), or
+  to drive its non-ready PRs back to green via /prepare-paperclip-pr without
+  merging.
 compatibility: Requires Node.js 20+, gh authenticated for GitHub read access, and Paperclip run credentials.
 allowed-tools: Bash(node:*) Bash(gh:*) Bash(curl:*)
 ---
@@ -99,7 +99,7 @@ Every `needs_gardening` PR here was opened by this instance (Stage A guarantees 
 
    Skip the PR if the latest matching marker is newer than the cooldown. Track rounds from matching markers; after three rounds, stop and report `not converging; recommend close or human decision`. That is a recommendation for human disposition, not an instruction to close the PR.
 
-2. **Deduplicate.** Search open Paperclip issues for the PR number/branch. If an equivalent open prepare-PR task already exists, reuse it with a concise status comment instead of creating another (see the deduplication section above).
+2. **Deduplicate.** Apply the deduplication procedure above to the PR number/branch; reuse an equivalent open prepare-PR task with a concise status comment.
 
 3. **Run the prepare skill.** Create one focused child task per PR assigned to a coder agent (prefer CodexCoder) instructing it to run `/prepare-paperclip-pr` for that PR — include the PR URL, branch, current head SHA, and the exact machine-detected `reasons[]` from `readiness.json`. If you are the gardener and already have the PR's branch checked out in a worktree, you may run `/prepare-paperclip-pr` directly instead of delegating. Either way, the prepare work must never merge, approve, or close the PR.
 
@@ -171,7 +171,7 @@ Upload `candidates.json`, `readiness.json`, and `gardening-report.md` to the gar
 
 ## Verification
 
-Run focused script tests:
+After changing the scripts, run their focused tests:
 
 ```bash
 node --test .agents/skills/pr-gardening/scripts/pr-gardening.test.mjs

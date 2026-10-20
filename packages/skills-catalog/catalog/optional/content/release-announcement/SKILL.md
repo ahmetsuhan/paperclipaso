@@ -1,6 +1,6 @@
 ---
 name: release-announcement
-description: Write a release announcement — changelog, blog post, in-app note, or social post — that leads with user impact, names the audience, and includes upgrade/migration steps without filler.
+description: Use when a shipped release, GA launch, or breaking change needs a changelog entry, release notes, blog post, in-app note, or social post that leads with user impact and upgrade steps.
 key: paperclipai/optional/content/release-announcement
 recommendedForRoles:
   - devrel
@@ -206,8 +206,7 @@ Same as changelog, plus:
 - "We are excited to announce" filler.
 - Lists of changes that mix user-visible and internal items.
 - Marketing claims without a way to verify.
-- Promised dates for unshipped work.
-- Pre-announcing something the team has not yet committed to ship.
+- Promised dates or pre-announcements for work the team has not yet committed to ship.
 
 ## Post-publish checklist
 

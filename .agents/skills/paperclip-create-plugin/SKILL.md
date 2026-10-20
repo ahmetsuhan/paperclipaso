@@ -8,8 +8,6 @@ description: >
 
 # Create and develop a Paperclip plugin
 
-Use this skill when the task is to create, scaffold, or iterate on a Paperclip plugin against a local Paperclip instance.
-
 ## 1. Default: build the plugin OUTSIDE Paperclip core
 
 Plugins are their own packages. Unless the task **explicitly** asks for a bundled in-repo example, do not add plugin source under `packages/plugins/` in this repo.
@@ -18,7 +16,7 @@ Plugins are their own packages. Unless the task **explicitly** asks for a bundle
 - Install it into the running Paperclip instance by local absolute path.
 - Edit code in the external package; let Paperclip pick up rebuilt output.
 
-Only edit Paperclip core itself when the user asks to surface a plugin as a bundled example (`server/src/routes/plugins.ts`, in-repo example lists, docs).
+Only edit Paperclip core itself when the user asks to surface a plugin as a bundled example; then also update the `server/src/routes/plugins.ts` example list and any docs that enumerate in-repo example plugins. Local-path installs are the supported development model; npm packages are the production deployment path.
 
 ## 2. Ground rules
 
@@ -133,16 +131,7 @@ When you finish a local plugin task, report:
 
 If any item is missing, mark it as such — do not silently skip.
 
-## 8. When NOT to edit Paperclip core
-
-Do not add the plugin under `packages/plugins/` or update bundled-example wiring unless the user explicitly asks for a bundled example. Local-path installs are the supported development model; npm packages are the production deployment path.
-
-If the user does ask for a bundled example, also update:
-
-- `server/src/routes/plugins.ts` example list
-- any docs that enumerate in-repo example plugins
-
-## 9. Documentation expectations
+## 8. Documentation expectations
 
 When authoring or updating plugin docs:
 

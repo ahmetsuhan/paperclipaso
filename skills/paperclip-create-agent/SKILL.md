@@ -1,14 +1,11 @@
 ---
 name: paperclip-create-agent
 description: >
-  Create new agents in Paperclip with governance-aware hiring. Use when you need
-  to inspect adapter configuration options, compare existing agent configs,
-  draft a new agent prompt/config, and submit a hire request.
+  Use when asked to hire or create a Paperclip agent, or when following up on a
+  pending or resolved hire approval.
 ---
 
 # Paperclip Create Agent Skill
-
-Use this skill when you are asked to hire/create an agent.
 
 ## Preconditions
 
@@ -115,8 +112,8 @@ curl -sS "$PAPERCLIP_API_URL/llms/agent-icons.txt" \
 
 ### 7. Review the draft against the quality checklist
 
-Before submitting, walk the draft-review checklist end-to-end and fix any item that does not pass:
-`skills/paperclip-create-agent/references/draft-review-checklist.md`
+Before submitting, walk the [draft-review checklist](references/draft-review-checklist.md)
+end-to-end and fix any item that does not pass.
 
 ### 8. Submit hire request
 
@@ -143,13 +140,10 @@ curl -sS -X POST "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/agent-h
 ### 9. Handle governance state
 
 - if the response has `approval`, the hire is `pending_approval`
-- monitor and discuss on the approval thread
-- when the board approves, you will be woken with `PAPERCLIP_APPROVAL_ID`; read linked issues and close/comment follow-up
+- discuss revisions on the approval thread; do not poll it, because you are woken
+  with `PAPERCLIP_APPROVAL_ID` when the board resolves it
 
 ```sh
-curl -sS "$PAPERCLIP_API_URL/api/approvals/<approval-id>" \
-  -H "Authorization: Bearer $PAPERCLIP_API_KEY"
-
 curl -sS -X POST "$PAPERCLIP_API_URL/api/approvals/<approval-id>/comments" \
   -H "Authorization: Bearer $PAPERCLIP_API_KEY" \
   -H "Content-Type: application/json" \
@@ -165,7 +159,7 @@ curl -sS -X POST "$PAPERCLIP_API_URL/api/issues/<issue-id>/approvals" \
   -d '{"approvalId":"<approval-id>"}'
 ```
 
-After approval is granted, run this follow-up loop:
+When woken after approval, read the approval and its linked issues once:
 
 ```sh
 curl -sS "$PAPERCLIP_API_URL/api/approvals/$PAPERCLIP_APPROVAL_ID" \
@@ -181,11 +175,8 @@ For each linked issue, either:
 
 ## References
 
-- Optional role examples: `skills/paperclip-create-agent/references/agent-instruction-templates.md`
-- Individual role templates: `skills/paperclip-create-agent/references/agents/`
-- Short role drafting guide: `skills/paperclip-create-agent/references/baseline-role-guide.md`
-- Pre-submit draft-review checklist: `skills/paperclip-create-agent/references/draft-review-checklist.md`
-- Endpoint payload shapes and full examples: `skills/paperclip-create-agent/references/api-reference.md`
+Endpoint list, payload shapes, and approval lifecycle: [references/api-reference.md](references/api-reference.md).
+Read it only when a field or status above is unclear.
 
 ## Harness and runner selection
 

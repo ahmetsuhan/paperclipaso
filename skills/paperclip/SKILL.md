@@ -27,7 +27,7 @@ Manual local CLI mode (outside heartbeat runs): use `paperclipai agent local-cli
 
 **CLI safety — use `npx paperclipai` for content-bearing arguments.** When you run the Paperclip CLI, use `npx paperclipai` for any argument that can hold untrusted content. Untrusted content includes issue text, comment bodies, Markdown, pasted snippets, and model output. `npx paperclipai` runs the CLI binary directly and passes the argument as an inert `argv` value; it does not run a shell over the value. Do not use `pnpm paperclipai` for such an argument. `pnpm paperclipai` is a `package.json` script; `pnpm` appends the argument to a `/bin/sh` command string, so the shell reads it first and interprets a backtick pair, `$( )`, or `$NAME` before the CLI starts. A crafted value can run an arbitrary command as the invoking user, or expand an environment variable into the stored argument. This risk stays even when the argument comes from a quoted shell variable, because `pnpm` re-evaluates the value in its own shell. Do not use `pnpm exec paperclipai` either; the root workspace does not link that binary, so the command fails with `Command "paperclipai" not found`. To run local `cli/src` changes with a content-bearing argument, use `node cli/node_modules/tsx/dist/cli.mjs cli/src/index.ts <command> <args>`. See `doc/CLI.md` for the full safe/unsafe matrix.
 
-**Run audit trail:** You MUST include `-H 'X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID'` on ALL API requests that modify issues (checkout, update, comment, create subtask, release). This links your actions to the current heartbeat run for traceability.
+**Run audit trail:** You MUST include `-H "X-Paperclip-Run-Id: $PAPERCLIP_RUN_ID"` (double quotes, so the variable expands) on ALL API requests that modify issues (checkout, update, comment, create subtask, release). This links your actions to the current heartbeat run for traceability.
 
 ## Conversation tasks
 
@@ -533,7 +533,7 @@ Authorized managers can install company skills independently of hiring, then ass
 - When hiring or creating an agent, include optional `desiredSkills` so the same assignment model is applied on day one.
 
 If you are asked to install a skill for the company or an agent you MUST read:
-`skills/paperclip/references/company-skills.md`
+`references/company-skills.md`
 
 ## Routines
 
@@ -544,7 +544,7 @@ Routines are recurring tasks. Each time a routine fires it creates an execution 
 - Control concurrency and catch-up behaviour with `concurrencyPolicy` and `catchUpPolicy`.
 
 If you are asked to create or manage routines you MUST read:
-`skills/paperclip/references/routines.md`
+`references/routines.md`
 
 ## Task Files and Workspace Choices
 
@@ -557,14 +557,14 @@ Use `get_workspace` to inspect the current folder, pending selection, and capabi
 When an issue needs browser/manual QA or a preview server, inspect its current execution workspace and use Paperclip's workspace runtime controls instead of starting unmanaged background servers yourself.
 
 For commands, response fields, and MCP tools, read:
-`skills/paperclip/references/issue-workspaces.md`
+`references/issue-workspaces.md`
 
 ## Proposing Credentials Safely
 
 **When you receive a credential, propose it as a Paperclip secret immediately with `POST /api/agents/me/secret-proposals`. NEVER paste the credential into an issue comment, document, file, plan, task description, or transcript.** This applies whether the value was pasted by a user, returned by an OAuth flow, delivered by email, or obtained from another secure source.
 
 Before proposing a credential you MUST read the "Agent secret proposals" section in:
-`skills/paperclip/references/api-reference.md`
+`references/api-reference.md`
 
 ## Reading Granted Secrets
 
@@ -590,7 +590,7 @@ curl -s -X POST -H "Authorization: Bearer $PAPERCLIP_API_KEY" \
 - Every value fetch, including failures, is audited in `secret_access_events` and `activity_log`; never print, persist, or paste fetched values into task comments.
 - These endpoints require the current run-bound agent JWT. Long-lived agent keys, low-trust review agents, task-bridge keys, and skill-test tokens are denied.
 
-Exact response fields are documented in `skills/paperclip/references/api-reference.md`.
+Exact response fields are documented in `references/api-reference.md`.
 
 ## Critical Rules
 
@@ -667,7 +667,7 @@ For a new report, use:
 
 If the task is accessible but `GET /api/issues/{issueId}/documents/report` returns `404 Document not found`, the document has not been created yet. Create it with PUT; that GET response does not mean document writes are unavailable. For an existing document, read its body and `latestRevisionId`, then send the revised body with `baseRevisionId` set to that revision. On `409`, fetch and reconcile the latest document before retrying.
 
-Read the saved document back before marking the task done. A comment or local file does not satisfy a request for a task document. If the required document cannot be saved, report the failure and leave an appropriate blocked disposition instead of claiming the deliverable is complete.
+Confirm the saved document from the PUT receipt (`key`, `body`, `latestRevisionId`) before marking the task done; GET it again only when the receipt is unclear. A comment or local file does not satisfy a request for a task document. If the required document cannot be saved, report the failure and leave an appropriate blocked disposition instead of claiming the deliverable is complete.
 
 ## Planning (Required when planning requested)
 
@@ -742,7 +742,7 @@ Results are ranked by relevance: title matches first, then identifier, descripti
 
 ## Full Reference
 
-For detailed API tables, JSON response schemas, worked examples (IC and Manager heartbeats), governance/approvals, cross-team delegation rules, error codes, issue lifecycle diagram, and the common mistakes table, read: `skills/paperclip/references/api-reference.md`
+For detailed API tables, JSON response schemas, worked examples (IC and Manager heartbeats), governance/approvals, cross-team delegation rules, error codes, issue lifecycle diagram, and the common mistakes table, see `references/api-reference.md`. It is long: search it for the heading you need instead of reading it whole.
 
 ### Conversational confirmation answers
 

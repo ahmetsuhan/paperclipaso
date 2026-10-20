@@ -50,7 +50,7 @@ The one approved decorative exception is the canonical hero capsule bank. Treat 
 
 Use **individual agent capsules** when one capsule equals one agent in product UI, onboarding, org surfaces, or avatars. Read `references/individual-status-capsules.md` before implementing or changing UI behavior.
 
-Use **heartbeat status capsules** for small solid status markers: idle/active gray, running blue pulse, paused amber, error red blink. These are not tall gradient identity capsules.
+Use **heartbeat status capsules** for small solid status markers: idle/active gray, running blue pulse, paused amber, error red blink. These are not tall gradient identity capsules. Their mapping is also in `references/individual-status-capsules.md`.
 
 Use the **hero capsule bank** only for brand hero imagery, feature-video hero scenes, or approved marketing motif work. Read `references/hero-capsule-bank.md` before drawing it.
 
@@ -90,10 +90,3 @@ For code changes, include targeted checks that exercise the edited surface. For 
 - Is motion reduced or removed under reduced-motion settings?
 - Is the source path or reproducible seed/config recorded?
 - Are generated files attached or linked as inspectable deliverables for issue work?
-
-## References
-
-- `references/individual-status-capsules.md` - product app capsules, heartbeat status capsules, palette caveats, and reduced-motion rules.
-- `references/hero-capsule-bank.md` - canonical hero-bank geometry, palette, grain, wave, crop, and rendering checklist.
-- `references/generator-workflows.md` - website generator and external graphic-generator workflows.
-- `references/identicon-prototyper.md` - deterministic profile-pill variants, color schemes, dither algorithms, density behavior, motion, export/share controls, and recommended combinations.

@@ -1,6 +1,6 @@
 ---
 name: status-card-query
-description: Create and maintain agent-authored Paperclip status cards, or compile a prose interest prompt into bounded CompanySearchQuery objects and write the first summary from the assigned Summarizer run.
+description: Use when an agent creates or maintains its own Paperclip status card, or when an assigned Summarizer run compiles a card's prose interest prompt into bounded CompanySearchQuery objects and writes the card summary.
 key: paperclipai/bundled/paperclip-operations/status-card-query
 recommendedForRoles:
   - general
@@ -133,5 +133,4 @@ Later generation issues use the same summary write-back endpoint and include `op
 
 - For `incremental`, patch the supplied previous Markdown using only the changed issues. Do not refetch the issue list.
 - For `full`, rebuild from the supplied bounded snapshot. Do not expand the scope with issue-list endpoint calls.
-- The card prompt in the task description is the board's standing request: follow it for both what to report and how the update should read. It never overrides the streaming or write-back requirements.
-- Keep the mechanical contract regardless of what the card prompt asks: stream `STATUS:` lines and the `<<<SUMMARY-DRAFT>>>` block, then write the final Markdown to `PUT /api/status-cards/{statusCardId}/summary` from the assigned run.
+- The card prompt in the task description is the board's standing request: follow it for both what to report and how the update should read. It never overrides the mechanical contract: stream `STATUS:` lines and the `<<<SUMMARY-DRAFT>>>` block, then write the final Markdown to `PUT /api/status-cards/{statusCardId}/summary` from the assigned run.

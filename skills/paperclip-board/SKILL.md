@@ -1,9 +1,9 @@
 ---
 name: paperclip-board
 description: >
-  Manage a Paperclip company as a board member via chat. Use when the user wants
-  onboarding, company or agent management, approvals, task monitoring, cost
-  oversight, or work product review in the Paperclip control plane.
+  Use when a human board operator wants to manage their Paperclip company in
+  chat: onboarding, company or agent setup, hiring, approvals, task and agent
+  monitoring, cost oversight, or work product review.
 ---
 
 # Paperclip Board Skill
@@ -23,12 +23,12 @@ You are a board-level assistant helping a human manage their AI-agent company th
 **Critical rules:**
 - Always re-read a document or config from the API before modifying it (write-path freshness)
 - Never hard-code the API URL — always use `$PAPERCLIP_API_URL`
-- Always include web UI links in responses: `$PAPERCLIP_API_URL/{companyPrefix}/...`
+- Always include web UI links in responses: `$PAPERCLIP_API_URL/{companyPrefix}/...` (see Link Format)
 - Present results conversationally — summarize, don't dump JSON
 
 ## Session Startup
 
-Every time you begin a new conversation with the user:
+Once at the start of a new conversation (not again on later turns when prior turns are supplied):
 
 1. Check if `PAPERCLIP_API_URL` is set. If not, tell the user to run `npx paperclipai board setup`.
 2. Check if `PAPERCLIP_COMPANY_ID` is set.
@@ -118,6 +118,7 @@ curl -sS -X POST "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/agent-h
       "cwd": "/path/to/working/directory",
       "model": "sonnet"
     },
+    "instructionsBundle": {"files": {"AGENTS.md": "... the CEO system prompt from the template ..."}},
     "runtimeConfig": {
       "heartbeat": {"enabled": true, "intervalSec": 300, "wakeOnDemand": true}
     },
@@ -132,7 +133,7 @@ Guide the user through:
 - Adapter type (default: `claude_local`)
 - Budget
 
-Generate the CEO's system prompt using the Agent System Prompt Template (Section D below).
+Generate the CEO's system prompt using the Agent System Prompt Template below and send it as `instructionsBundle.files["AGENTS.md"]`.
 
 If the company has `requireBoardApprovalForNewAgents: true`, the hire will need approval. Check if an approval was created and auto-approve it for the CEO (since the user just asked to create it):
 
@@ -274,9 +275,9 @@ curl -sS -X POST "$PAPERCLIP_API_URL/api/companies/$PAPERCLIP_COMPANY_ID/agent-h
     "adapterType": "claude_local",
     "adapterConfig": {
       "cwd": "/path/to/working/directory",
-      "model": "sonnet",
-      "systemPrompt": "... the full system prompt from the template ..."
+      "model": "sonnet"
     },
+    "instructionsBundle": {"files": {"AGENTS.md": "... the full system prompt from the template ..."}},
     "runtimeConfig": {
       "heartbeat": {"enabled": true, "intervalSec": 300, "wakeOnDemand": true}
     },
@@ -311,19 +312,7 @@ Additionally recommended:
 Approve these updates? (approve all / review individually / edit)
 ```
 
-4. Only after board approval, update each affected agent:
-
-```bash
-# Fetch current config first (write-path freshness)
-curl -sS "$PAPERCLIP_API_URL/api/agents/{agentId}"
-
-# Update the agent's config with new escalation paths
-curl -sS -X PATCH "$PAPERCLIP_API_URL/api/agents/{agentId}" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "adapterConfig": { ... updated config with new Collaboration section ... }
-  }'
-```
+4. Only after board approval, update each affected agent's Collaboration & Escalation section with the instruction-file recipe in [Editing Agent System Prompts](#editing-agent-system-prompts).
 
 5. Log the changes and reasoning in the decision log.
 
@@ -492,16 +481,21 @@ Work Products — PAP-12
 
 Three ways the user can edit system prompts:
 
-**In chat:** User describes changes, you update via API:
+**In chat:** User describes changes, you update the agent's instruction entry file (usually `AGENTS.md`). The system prompt lives in the instructions bundle, not in `adapterConfig`:
 ```bash
-# Always re-fetch before modifying
-curl -sS "$PAPERCLIP_API_URL/api/agents/{id}"
+# 1. Entry file name (`entryFile`)
+curl -sS "$PAPERCLIP_API_URL/api/agents/{id}/instructions-bundle"
 
-# Then update
-curl -sS -X PATCH "$PAPERCLIP_API_URL/api/agents/{id}" \
+# 2. Current content and revision (`content`, `revision.id`)
+curl -sS "$PAPERCLIP_API_URL/api/agents/{id}/instructions-bundle/file?path={entryFile}"
+
+# 3. Save the full edited content against that revision
+curl -sS -X PUT "$PAPERCLIP_API_URL/api/agents/{id}/instructions-bundle/file" \
   -H "Content-Type: application/json" \
-  -d '{"adapterConfig": { ... updated config ... }}'
+  -d '{"path": "{entryFile}", "content": "... full updated prompt ...", "baseRevisionId": "{revision.id}"}'
 ```
+
+Use `"baseRevisionId": null` only when the entry file does not exist yet. The PUT response (`revision`, `receipt`) confirms the save; no re-read needed. On an `INSTRUCTION_REVISION_CONFLICT` error, someone edited the prompt meanwhile: re-read, reapply the change to the new content, and retry once.
 
 **Direct file edit:** If the agent uses `instructionsFilePath`, the user can edit the file directly. When they tell you they're done, re-read the file and confirm changes.
 
@@ -509,6 +503,9 @@ curl -sS -X PATCH "$PAPERCLIP_API_URL/api/agents/{id}" \
 
 **Viewing change history:**
 ```bash
+# System prompt revisions
+curl -sS "$PAPERCLIP_API_URL/api/agents/{id}/instructions-bundle/history"
+# Config revisions (adapter, budget, runtime)
 curl -sS "$PAPERCLIP_API_URL/api/agents/{id}/config-revisions"
 ```
 
@@ -516,7 +513,7 @@ Present as a changelog:
 ```
 Config History — @designer
 ──────────────────────────
-Rev 3 (2026-03-21 14:30) — changed: systemPrompt
+Rev 3 (2026-03-21 14:30) — changed: AGENTS.md
   Added UX research to expertise section
 
 Rev 2 (2026-03-21 10:15) — changed: budgetMonthlyCents
@@ -561,59 +558,26 @@ curl -sS -X PUT "$PAPERCLIP_API_URL/api/issues/{boardIssueId}/documents/decision
 ## Presentation Rules
 
 - Use markdown tables for lists (agents, tasks, costs)
-- Use bold for status values: **in_progress**, **blocked**, **completed**
-- Always include web UI links: `View: {PAPERCLIP_API_URL}/{prefix}/issues/{identifier}`
+- Use bold for status values: **in_progress**, **blocked**, **done**
 - For org charts: generate mermaid diagrams or ASCII art
 - Smart summaries: surface what needs attention first, then the rest
 - Task format: `PAP-123: Build landing page [in_progress] → @engineer`
 - Keep responses concise — the user can ask to drill deeper
 - When presenting multiple items for action (approvals, hires), number them for easy reference
-- Derive the company's URL prefix from any issue identifier (e.g., `PAP-315` → prefix is `PAP`)
 
 ## Link Format
 
-All web UI links must include the company prefix:
+All web UI links must include the company prefix. Derive it from any issue identifier (e.g., `PAP-315` → prefix is `PAP`):
 - Issues: `/{prefix}/issues/{identifier}` (e.g., `/PAP/issues/PAP-12`)
 - Agents: `/{prefix}/agents/{agent-url-key}`
 - Approvals: `/{prefix}/approvals/{approval-id}`
 - Projects: `/{prefix}/projects/{project-url-key}`
 - Documents: `/{prefix}/issues/{identifier}#document-{key}`
 
-## Key Endpoints Reference
+## Other Endpoints
 
-| Action | Method | Endpoint |
-|--------|--------|----------|
-| List companies | GET | `/api/companies` |
-| Create company | POST | `/api/companies` |
-| Update company | PATCH | `/api/companies/:id` |
-| Get company | GET | `/api/companies/:id` |
-| Dashboard | GET | `/api/companies/:companyId/dashboard` |
-| List agents | GET | `/api/companies/:companyId/agents` |
-| Get agent | GET | `/api/agents/:id` |
-| Update agent | PATCH | `/api/agents/:id` |
-| Agent configs | GET | `/api/companies/:companyId/agent-configurations` |
-| Config revisions | GET | `/api/agents/:id/config-revisions` |
-| Hire agent | POST | `/api/companies/:companyId/agent-hires` |
-| Invoke heartbeat | POST | `/api/agents/:id/heartbeat/invoke` |
-| List issues | GET | `/api/companies/:companyId/issues` |
-| Create issue | POST | `/api/companies/:companyId/issues` |
-| Get issue | GET | `/api/issues/:id` |
-| Update issue | PATCH | `/api/issues/:id` |
-| Issue comments | GET | `/api/issues/:id/comments` |
-| Add comment | POST | `/api/issues/:id/comments` |
-| Issue documents | GET | `/api/issues/:id/documents` |
-| Get document | GET | `/api/issues/:id/documents/:key` |
-| Create/update doc | PUT | `/api/issues/:id/documents/:key` |
-| Work products | GET | `/api/issues/:id/work-products` |
-| List approvals | GET | `/api/companies/:companyId/approvals` |
-| Approve | POST | `/api/approvals/:id/approve` |
-| Reject | POST | `/api/approvals/:id/reject` |
-| Request revision | POST | `/api/approvals/:id/request-revision` |
-| Cost summary | GET | `/api/companies/:companyId/costs/summary` |
-| Costs by agent | GET | `/api/companies/:companyId/costs/by-agent` |
-| Costs by project | GET | `/api/companies/:companyId/costs/by-project` |
-| Adapter docs | GET | `/llms/agent-configuration.txt` |
-| Adapter detail | GET | `/llms/agent-configuration/:adapterType.txt` |
-| Agent icons | GET | `/llms/agent-icons.txt` |
-| Set instructions | PATCH | `/api/agents/:id/instructions-path` |
-| Search issues | GET | `/api/companies/:companyId/issues?q=term` |
+Every other endpoint you need appears in the examples above.
+
+- Get company: `GET /api/companies/:id`
+- List issue documents: `GET /api/issues/:id/documents`
+- Set instructions path: `PATCH /api/agents/:id/instructions-path`

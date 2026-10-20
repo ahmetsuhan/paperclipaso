@@ -2,8 +2,9 @@
 name: pr-report
 description: >
   Produce a maintainer-grade PR or contribution report as HTML or Markdown. Use
-  when asked to deeply review a PR, explain a design, compare systems, or prepare
-  a merge recommendation.
+  when asked to deeply review or explain a PR or contribution, make a report or
+  webpage for it, compare its design to similar systems, or answer "should I
+  merge this?".
 ---
 
 # PR Report Skill
@@ -17,16 +18,6 @@ Default posture:
 - separate architectural problems from product-scope objections
 - make a concrete recommendation, not a vague impression
 
-## When to Use
-
-Use this skill when the user asks for things like:
-
-- "review this PR deeply"
-- "explain this contribution to me"
-- "make me a report or webpage for this PR"
-- "compare this design to similar systems"
-- "should I merge this?"
-
 ## Outputs
 
 Common outputs:
@@ -37,11 +28,6 @@ Common outputs:
 
 If the user asks for a webpage, build a polished standalone HTML artifact with
 clear sections and readable visual hierarchy.
-
-Resources bundled with this skill:
-
-- `references/style-guide.md` for visual direction and report presentation rules
-- `assets/html-report-starter.html` for a reusable standalone HTML/CSS starter
 
 ## Workflow
 
@@ -149,16 +135,10 @@ Suggested report structure:
 6. Comparisons
 7. Recommendation
 
-For HTML reports:
-
-- use intentional typography and color
-- make navigation easy for long reports
-- favor strong section headings and small reference labels
-- avoid generic dashboard styling
-
-Before building from scratch, read `references/style-guide.md`.
-If a fast polished starter is helpful, begin from `assets/html-report-starter.html`
-and replace the placeholder content with the actual report.
+For HTML reports, read `references/style-guide.md` (visual direction and
+presentation rules) before building. If a fast polished starter is helpful,
+begin from `assets/html-report-starter.html` and replace the placeholder
+content with the actual report.
 
 ### 8. Verify before handoff
 

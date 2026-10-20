@@ -1,6 +1,6 @@
 ---
 name: maintain-storybook
-description: Keep Paperclip stories and their downstream catalog aligned with the feature map and production UI. Use to reconcile story drift, classify prototypes, update fixtures, or maintain feature coverage.
+description: Use when Paperclip Storybook stories, fixtures, or the storybook catalog drift from the feature map or production UI — reconciling story drift, classifying prototypes, updating fixtures, or maintaining story feature coverage.
 ---
 
 # Maintain Storybook
@@ -62,14 +62,13 @@ built `index.json`; use explicit meta IDs when needed and compare IDs afterward.
 Place stories under `ui/storybook/stories/<primary-feature-area>/`. Use the feature
 map's section and feature names as their sidebar prefix; keep useful scenario
 groupings beneath that prefix. Put shared fixture modules in `ui/storybook/support/`.
-Keep the explicit CSF meta ID stable even when the title changes; the generated
-catalog derives `stableId` from it. Unmapped component examples belong under Foundations; the catalog guide
+The generated catalog derives `stableId` from the explicit CSF meta ID. Unmapped component examples belong under Foundations; the catalog guide
 belongs under Overview. The checker verifies these conventions.
 
 Keep the main guide and every feature Overview congruent with the upstream index:
 same section/feature names and order, all capabilities in recipe order, related
-suite links across primary homes, and explicit missing examples. Run `node scripts/storybook-catalog.mjs` to regenerate ignored indexes, feature
-pages, and preview ordering. Storybook startup/build also generates them. Never
+suite links across primary homes, and explicit missing examples. The same `node scripts/storybook-catalog.mjs` run
+regenerates ignored indexes, feature pages, and preview ordering. Storybook startup/build also generates them. Never
 hand-edit or commit generated output. Generated guides are not example coverage.
 Preserve their `feature-map-<area>--overview` IDs. The generator removes obsolete
 pages from its own ignored output directory when areas disappear.

@@ -1,6 +1,6 @@
 ---
 name: fix-failed-paperclip-run
-description: Diagnose and fix failed, stuck, slow, or incorrectly blocked Paperclip tasks and runs. Use with a task/run URL or failure report to trace the root cause, prove a regression red then green, check second-order effects, verify the real workflow, and deliver a PR with passing checks.
+description: Use when a Paperclip task or run failed, got stuck, ran slow, or was incorrectly blocked, given a task/run URL or failure report, and the root cause should be fixed through a verified, green PR.
 ---
 
 # Fix Failed Paperclip Run
@@ -200,5 +200,5 @@ Finish with a concise report:
 - Whether the original task is recovered, still awaiting rollout, or blocked on a
   specific remaining dependency. Separate code readiness from incident recovery.
 
-Do not stop at a plan when a fix is authorized. Do not call the incident resolved
-because its error message improved or a successful run badge appeared.
+Do not call the incident resolved because its error message improved or a
+successful run badge appeared.

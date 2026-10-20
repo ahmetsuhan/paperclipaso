@@ -1,6 +1,6 @@
 ---
 name: qa-acceptance
-description: Produce QA acceptance criteria and a manual validation plan for a feature change — golden path, edge cases, error states, performance limits, and explicit pass/fail evidence.
+description: Use when a user-visible feature change, PR verification, regression check, or release smoke pass needs QA acceptance criteria and a manual validation plan with explicit pass/fail evidence.
 key: paperclipai/bundled/quality/qa-acceptance
 recommendedForRoles:
   - qa
@@ -90,4 +90,3 @@ The author owns turning failures into either fixes or accepted deferrals.
 - Acceptance phrased as test plan ("write a Cypress test for X"). Acceptance is what is true after the change ships; tests are how you check.
 - Criteria that depend on inspecting implementation details (selectors, query plans). Stay observable.
 - Long checklists with no priority. Mark must-pass criteria distinctly from nice-to-have.
-- Validation reports that say "passed" with no evidence. Reviewers cannot audit those.

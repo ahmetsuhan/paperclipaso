@@ -16,8 +16,6 @@ docs. It is intentionally a developer/maintainer skill: the audience is a
 human or coding agent making code changes inside `paperclipai/paperclip`, not
 the operational agents that run inside a deployed Paperclip company.
 
-Do NOT install this on production Paperclip agents. This guide is for repository contributors changing Paperclip itself.
-
 ## When to use
 
 - A new interaction kind is being introduced (compact picker, structured
@@ -258,16 +256,9 @@ If UI vitest fails with `act is not a function`, the shell is running with
 
 ## Anti-patterns observed in review
 
-These came out of the checkbox PR review thread and are worth avoiding next
-time:
+These came out of the checkbox PR review thread. Besides violating the field-name,
+staleness/supersede, and count-first invariants above, avoid:
 
-- Reusing another kind's accept-payload field name (e.g. piggybacking on
-  `selectedClientKeys` instead of introducing `selectedOptionIds`). Each kind
-  owns its own field names.
-- Writing parallel staleness or supersede logic instead of routing through
-  the existing `request_confirmation` helpers. This silently drifts behavior.
-- Rendering hundreds of selected-option chips in the resolved state. Resolved
-  large selections must summarize by count first.
 - Skipping plugin SDK / MCP / CLI coverage on the theory that "the API is
   generic enough." External callers do not pick up new kinds without typed
   helpers, and the absence shows up later as broken agent flows.

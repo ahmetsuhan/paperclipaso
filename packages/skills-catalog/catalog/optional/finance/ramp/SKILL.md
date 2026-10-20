@@ -92,7 +92,3 @@ After approval, do only the approved action and stay within the approved amount,
 4. Create the Paperclip approval, link it to the issue, and set the issue to a real waiting path if approval blocks progress.
 5. After approval, continue the Ramp playbook inside the approved scope.
 6. Record what was fetched, what was approved, what was done, and what remains.
-
-## Design note
-
-This skill intentionally does not vendor Ramp's published skill. Ramp's playbooks can change as their product, CLI, and connector setup change. Paperclip keeps the durable safety policy here and fetches Ramp's current instructions from an explicit allowlist at execution time. The tradeoff is that external content must be reviewed at run time; the approval gates and source allowlist are the control boundary.

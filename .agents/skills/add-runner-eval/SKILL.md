@@ -1,6 +1,6 @@
 ---
 name: add-runner-eval
-description: Add or extend a Paperclip Runner protocol evaluation definition, roster, assertion, or report fixture with provenance and narrow validation.
+description: Use when adding or extending a Paperclip Runner protocol eval (real Runner/provider against a mock control plane) definition, roster, assertion, or report fixture. Product browser/server E2E uses add-product-e2e-eval.
 ---
 
 # Add a Runner Eval
@@ -66,7 +66,4 @@ complete provenance and cost record.
 
 Update authoritative detailed docs when the contract or command changes, then
 link from `doc/evals.md` rather than duplicating the Runner runbook. Keep public
-reports immutable and use the reviewed projection; sanitized fixture
-conversation and allowlisted tool outcomes may be public, while credentials,
-secrets, private references, raw trusted payloads, and hidden reasoning must not
-be exposed.
+reports immutable and use the reviewed projection described above.

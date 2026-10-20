@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "packageName": "@paperclipai/skills-catalog",
   "packageVersion": "0.3.1",
-  "generatedAt": "2026-10-06T01:21:47.421Z",
+  "generatedAt": "2026-10-20T21:25:00.690Z",
   "skills": [
     {
       "id": "paperclipai:bundled:docs:doc-maintenance",
@@ -11,7 +11,7 @@
       "category": "docs",
       "slug": "doc-maintenance",
       "name": "doc-maintenance",
-      "description": "Keep project docs aligned with recent code and feature changes — detect drift, update affected pages, and add release-relevant notes without rewriting unchanged sections.",
+      "description": "Use when user-visible behavior changed (flags, APIs, defaults, config, endpoints), docs caused a bug, or a release needs a docs pass — detect drift, update only affected pages, and write release notes.",
       "path": "catalog/bundled/docs/doc-maintenance",
       "entrypoint": "SKILL.md",
       "trustLevel": "markdown_only",
@@ -32,11 +32,11 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 4478,
-          "sha256": "fb0353386c5e5e5e13bcbb3233f044e3dccecf371f429d6328f26c26d7cb6169"
+          "sizeBytes": 4314,
+          "sha256": "c41599cf4da7b98ce28b35e96f5e0100f15ee595ce2d6e4ec1ac89778256492f"
         }
       ],
-      "contentHash": "sha256:2e02299210fd17c1fe1867b4ee8c144a11b6fe1fe481f83b8268cfbaaf10f9aa"
+      "contentHash": "sha256:1f2c469b686b772bd435b584f1ab18860c598d3a6d1cc59eaf9044ba2168296d"
     },
     {
       "id": "paperclipai:bundled:paperclip-operations:issue-triage",
@@ -45,7 +45,7 @@
       "category": "paperclip-operations",
       "slug": "issue-triage",
       "name": "issue-triage",
-      "description": "Triage Paperclip inbox issues that are stale, blocked, in-review, or assigned-but-not-progressing, and decide a single next action per issue (resume, reassign, unblock, escalate, or close).",
+      "description": "Use when triaging a Paperclip inbox of stale, blocked, in-review, or assigned-but-not-progressing issues and deciding one next action per issue (resume, wake, reassign, unblock, escalate, or close).",
       "path": "catalog/bundled/paperclip-operations/issue-triage",
       "entrypoint": "SKILL.md",
       "trustLevel": "markdown_only",
@@ -67,11 +67,11 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 4042,
-          "sha256": "df5bdc8bf5e017b7ba5f70a4b5323fad51d0c323278f386580f26cf43ad09160"
+          "sizeBytes": 4051,
+          "sha256": "d124db4b099e86e3893981bc8cc42200a386b79ebc3b48b1bcb6ecf8a7d8f957"
         }
       ],
-      "contentHash": "sha256:88dc13560371fb364963782cb4f6eeb4090fcde92ee3774479428ed6b90e11c1"
+      "contentHash": "sha256:bcbb3e2c2085eb3fe59ecb9889433d17c4fb8e2491ceed770c1ac436f71f2e73"
     },
     {
       "id": "paperclipai:bundled:paperclip-operations:reflection-coach",
@@ -80,7 +80,7 @@
       "category": "paperclip-operations",
       "slug": "reflection-coach",
       "name": "reflection-coach",
-      "description": "Reflect on another agent's recent execution record and propose the smallest durable instruction, skill, or tool-description change. Use for evidence-backed coaching proposals, never hot-swaps.",
+      "description": "Use when asked to reflect on, coach, or review another agent's recent execution record and propose the smallest durable AGENTS.md, skill, or tool-description change as an evidence-backed reviewed proposal, never a hot-swap.",
       "path": "catalog/bundled/paperclip-operations/reflection-coach",
       "entrypoint": "SKILL.md",
       "trustLevel": "markdown_only",
@@ -102,11 +102,11 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 12028,
-          "sha256": "083d5fa8dc43c3ce7747e89c1afb6f6f42d0603a31808bffc5f8e56735f2d865"
+          "sizeBytes": 11173,
+          "sha256": "72fe2c613ad5b44dbfdaa8851786075c1cf9f6fe761a32d265e7803a03a4e1dc"
         }
       ],
-      "contentHash": "sha256:f2592d81f616628a3eba92636616424f2eed82ec22bb504240a58f6be115e407"
+      "contentHash": "sha256:269d3a148a684a45f0c2f0606f4816afb594cd491e02c490ad46b32e0c8ac9b6"
     },
     {
       "id": "paperclipai:bundled:paperclip-operations:status-card-query",
@@ -115,7 +115,7 @@
       "category": "paperclip-operations",
       "slug": "status-card-query",
       "name": "status-card-query",
-      "description": "Create and maintain agent-authored Paperclip status cards, or compile a prose interest prompt into bounded CompanySearchQuery objects and write the first summary from the assigned Summarizer run.",
+      "description": "Use when an agent creates or maintains its own Paperclip status card, or when an assigned Summarizer run compiles a card's prose interest prompt into bounded CompanySearchQuery objects and writes the card summary.",
       "path": "catalog/bundled/paperclip-operations/status-card-query",
       "entrypoint": "SKILL.md",
       "trustLevel": "markdown_only",
@@ -137,11 +137,11 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 6368,
-          "sha256": "0c6140f51d503cbadc98723ce54c0def48e7e31ea159b0935b8ad6369291498a"
+          "sizeBytes": 6297,
+          "sha256": "2001dff35dd81a372eef8aff52b7e2ce0b7cbf3322867f5eb2ee8267a5d588a4"
         }
       ],
-      "contentHash": "sha256:2b6e53bf8491f027afdbd6961ad84f677cfd385a0a6a73616ea84111ca8886ed"
+      "contentHash": "sha256:63de9da9d5ee4ea5ddb1a5bf81863d497bd54d3f8386c129b531fa9ac6f6a560"
     },
     {
       "id": "paperclipai:bundled:paperclip-operations:summarize-status",
@@ -245,8 +245,8 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 5831,
-          "sha256": "dd659ccb46e105336eb00fbe689b1d5531347fc69493c3156390d40ee413c93e"
+          "sizeBytes": 5333,
+          "sha256": "2f2503bae6a05f63b33a045775b46af922f9d39176329c95c0f1af83cdba2177"
         },
         {
           "path": "references/generator-workflows.md",
@@ -273,7 +273,7 @@
           "sha256": "be1f2eccf96b4d2deefe45b3bc1dd0a3597278472c2ffedadc43c57161e9103d"
         }
       ],
-      "contentHash": "sha256:a2b26cf6895affeeb70c85567a061094450a59bd3c4fdcf28ee65858599ac12c"
+      "contentHash": "sha256:f247d4628923158081295f6877a2044391faedf429ba7e99b5c76e65b12e0d14"
     },
     {
       "id": "paperclipai:bundled:product:wireframe",
@@ -305,8 +305,8 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 11509,
-          "sha256": "6992047cc97b67211cc8c1183718ab9aa26b8afc34c70d54d20558c215daaf48"
+          "sizeBytes": 7561,
+          "sha256": "480d22c053b3ff996eb1878f99e3bbeaf1c33293c38eee5891c60228bf58a4e6"
         },
         {
           "path": "assets/site-template.html",
@@ -343,9 +343,15 @@
           "kind": "reference",
           "sizeBytes": 4581,
           "sha256": "017260d2216859d57e5fa869e0efc6b88c7ed4d8a8a4f5af04fe89a3ef2445bd"
+        },
+        {
+          "path": "references/viewer-and-publishing.md",
+          "kind": "reference",
+          "sizeBytes": 4532,
+          "sha256": "63a7947c95bd8660d9eb811bcbb287aafb4c3f5e9c0e58c6692651cb47d21c74"
         }
       ],
-      "contentHash": "sha256:7106d84fc9db2053090f692706e41cfc586e7dd85a44f568e3319c4eefbdde46"
+      "contentHash": "sha256:6834878fe6be161775f0f548b97a0434d10868c8081325ca3218ac62e6c674cf"
     },
     {
       "id": "paperclipai:bundled:quality:qa-acceptance",
@@ -354,7 +360,7 @@
       "category": "quality",
       "slug": "qa-acceptance",
       "name": "qa-acceptance",
-      "description": "Produce QA acceptance criteria and a manual validation plan for a feature change — golden path, edge cases, error states, performance limits, and explicit pass/fail evidence.",
+      "description": "Use when a user-visible feature change, PR verification, regression check, or release smoke pass needs QA acceptance criteria and a manual validation plan with explicit pass/fail evidence.",
       "path": "catalog/bundled/quality/qa-acceptance",
       "entrypoint": "SKILL.md",
       "trustLevel": "markdown_only",
@@ -376,11 +382,11 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 3861,
-          "sha256": "c631b437ab26d104af6cdb963d8f679a9341439041b3cb3ec8835f4ff551b378"
+          "sizeBytes": 3786,
+          "sha256": "b67a9380e0223c622d0fec452d441bbccdbb046ccf369bf9c7700d222fad89cd"
         }
       ],
-      "contentHash": "sha256:32372dacaf62e93454b9855968c4eec96456ba78b509f450b3dfaa48e31ef356"
+      "contentHash": "sha256:5056b1dafe466122451f59bb8ec82952d02d902d9aa40743cca588cdc94b54ee"
     },
     {
       "id": "paperclipai:bundled:software-development:github-pr-workflow",
@@ -389,7 +395,7 @@
       "category": "software-development",
       "slug": "github-pr-workflow",
       "name": "github-pr-workflow",
-      "description": "Prepare a GitHub pull request from a feature branch — branch hygiene, commit shape, title/body, verification notes, screenshots for UI work, and replies to review comments.",
+      "description": "Use when opening a GitHub pull request for finished work, responding to its review comments, or bringing a stale PR back into shape — branch hygiene, title/body, verification evidence, and merge readiness.",
       "path": "catalog/bundled/software-development/github-pr-workflow",
       "entrypoint": "SKILL.md",
       "trustLevel": "markdown_only",
@@ -409,11 +415,11 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 3970,
-          "sha256": "f498ec4ebb1779dea37adeb1db8a8b22316282798e35ee02e2fc5ff627d7e261"
+          "sizeBytes": 4115,
+          "sha256": "02be6174871ab7ac4490f04678e5144956cbae9b48b6a4d53d01802cf8f1548c"
         }
       ],
-      "contentHash": "sha256:90f278c89aa0711be150c1cd2456ca25620d02f36995b113ca9837d756a37f6c"
+      "contentHash": "sha256:a3d53bfe5f8916215bcd50f088c61da48a16d117119140825a9d428191dbf5e4"
     },
     {
       "id": "paperclipai:optional:browser:agent-browser",
@@ -422,7 +428,7 @@
       "category": "browser",
       "slug": "agent-browser",
       "name": "agent-browser",
-      "description": "Drive a real browser to inspect or interact with a web page or app — navigate, take screenshots, read console and network, fill simple forms — for verification tasks, not unattended automation.",
+      "description": "Use when verification needs a real browser — JS-rendered or login-gated pages, screenshots, console/network evidence, UI bug repros, or short click-through flows. Supervised verification only, not unattended automation.",
       "path": "catalog/optional/browser/agent-browser",
       "entrypoint": "SKILL.md",
       "trustLevel": "markdown_only",
@@ -444,11 +450,11 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 5133,
-          "sha256": "362f7b9d02297782bc6f0c093f495b8a0304a75bcf4b42e5c280a42b1f757b7d"
+          "sizeBytes": 5108,
+          "sha256": "35d369c9ff75a5afc2cb86ce573fbfb36db1637a86f7024241d29388e589b1c6"
         }
       ],
-      "contentHash": "sha256:eabb2c9f7b5e1a27ebb1e05a711d61433a266478154cd671a685e99e67aadea2"
+      "contentHash": "sha256:e9a01db16489f73817244adec1821c0f1d9fbf91eeab22780efd8186341fd2c1"
     },
     {
       "id": "paperclipai:optional:content:release-announcement",
@@ -457,7 +463,7 @@
       "category": "content",
       "slug": "release-announcement",
       "name": "release-announcement",
-      "description": "Write a release announcement — changelog, blog post, in-app note, or social post — that leads with user impact, names the audience, and includes upgrade/migration steps without filler.",
+      "description": "Use when a shipped release, GA launch, or breaking change needs a changelog entry, release notes, blog post, in-app note, or social post that leads with user impact and upgrade steps.",
       "path": "catalog/optional/content/release-announcement",
       "entrypoint": "SKILL.md",
       "trustLevel": "markdown_only",
@@ -479,11 +485,11 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 6945,
-          "sha256": "d745cca96350518fabae14f5c407d779e1df2c5d091b5b4a5c55bb888b569e5f"
+          "sizeBytes": 6923,
+          "sha256": "8458e58d2c7b5c58a59197704c6e48b41f31a8351647eb4a5de0271a7011ae17"
         }
       ],
-      "contentHash": "sha256:efe8ea89b552df95222609867c9c75f1b40e16f457d34e7e4a124f54daa33efa"
+      "contentHash": "sha256:44bcaa4425af264c588dec3862ce16782866202447d157e7ee48c074c5c09b11"
     },
     {
       "id": "paperclipai:optional:content:simplified-english",
@@ -552,11 +558,11 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 7016,
-          "sha256": "698cd69ebf2f2481ed83c8e9477b56ae78288cc4c751d7d35f649ff2483802a3"
+          "sizeBytes": 6588,
+          "sha256": "2ba51ac3ab19ba89f3e8cc6d3c23a7886b6577178da1bc2d03fc3d8772a9cc33"
         }
       ],
-      "contentHash": "sha256:276d85e98a4732f278204e26438aa95fde158dd2d15c1e427c4c7c7d492e769d"
+      "contentHash": "sha256:d060896f77bc1faac7fda6e39aae084eecb30173755acf6600f94d844db20983"
     },
     {
       "id": "paperclipai:optional:product:design-critique",
@@ -565,7 +571,7 @@
       "category": "product",
       "slug": "design-critique",
       "name": "design-critique",
-      "description": "Give a structured product design critique — user job clarity, hierarchy, affordance, error states, accessibility, and consistency — focused on what to change, in what order, and why.",
+      "description": "Use when asked for UX feedback or a final design read on a screen, flow, mock, component, or live UI — a prioritized critique of what to change, in what order, and why; not a redesign.",
       "path": "catalog/optional/product/design-critique",
       "entrypoint": "SKILL.md",
       "trustLevel": "markdown_only",
@@ -587,11 +593,11 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 4851,
-          "sha256": "022e619baf6cc25725946279cb8052d22af090dd6cd6dc8c20f17867f71a5d8e"
+          "sizeBytes": 4805,
+          "sha256": "9cd3065d3a36a9365549f09c98898ea265cd48b1202e52b0099f90fff03443a9"
         }
       ],
-      "contentHash": "sha256:429f94df398a0697042b5bbe4755b1ff1a230aa5f41d99118ad37493ac65d21c"
+      "contentHash": "sha256:61cc97e882ba5a623ae54f22f30b831e7ff9d38e25b2bf10d71dd465de52140f"
     },
     {
       "id": "paperclipai:optional:research:last30days",
@@ -1149,8 +1155,8 @@
         {
           "path": "SKILL.md",
           "kind": "skill",
-          "sizeBytes": 12409,
-          "sha256": "5278d288a0cbfe10fdda4ef3d99cf61e6ed068f4b6c1282406b0e001c9f45253"
+          "sizeBytes": 12473,
+          "sha256": "dfd7b6ded3b8763dfc5e68371d012f50862db456e78426f53654487a972c969d"
         },
         {
           "path": "examples/notion-mcp-research-gate.md",
@@ -1159,7 +1165,7 @@
           "sha256": "944b13ac67c06c65643eb236e856f1479106749861535648d29334f84cf1b50b"
         }
       ],
-      "contentHash": "sha256:84f2a28d7d004393719684f2b435e5ee01ddc58591e0dfeb73d72c7605db7f49"
+      "contentHash": "sha256:3bdbc0eea19fbb1dd9e65d215f2aaf4e111ac7ab32281249adccbe986160d4d8"
     }
   ]
 }

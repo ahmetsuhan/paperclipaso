@@ -1,6 +1,6 @@
 ---
 name: diagnose-why-work-stopped
-description: Compatibility entry point for failed, stalled, looping, or over-recovered Paperclip work. Use fix-failed-paperclip-run for the full diagnosis, regression, repair, real verification, and green-PR workflow; honor an explicitly requested diagnosis-only scope.
+description: Use when asked why Paperclip work failed, stalled, looped, or over-recovered. Compatibility entry point that routes to fix-failed-paperclip-run, or stays diagnosis-only when explicitly requested.
 ---
 
 # Diagnose Why Work Stopped

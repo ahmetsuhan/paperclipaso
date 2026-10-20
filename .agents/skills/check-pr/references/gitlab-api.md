@@ -89,3 +89,52 @@ glab api --method POST \
   "projects/:fullpath/merge_requests/<MR_IID>/notes" \
   --field body="your message here"
 ```
+
+## Greptile freshness gate for MRs
+
+For GitLab installations with Greptile integration, apply the same freshness rule against the MR's current head SHA:
+
+```bash
+# 1. Get the MR's current head SHA
+MR_SHA=$(glab mr view <MR_IID> --output json | jq -r '.sha // .diff_refs.head_sha')
+
+# 2. Find the latest pipeline for that EXACT sha, then the Greptile job within it.
+LATEST_PIPELINE_ID=$(glab api "projects/:fullpath/merge_requests/<MR_IID>/pipelines" \
+  | jq -r --arg sha "$MR_SHA" '[.[] | select(.sha == $sha)] | sort_by(.id) | last | .id // empty')
+
+if [ -n "$LATEST_PIPELINE_ID" ]; then
+  GREPTILE_JOBS=$(glab api "projects/:fullpath/pipelines/$LATEST_PIPELINE_ID/jobs" \
+    | jq --arg sha "$MR_SHA" '[.[] | select(.name | test("greptile"; "i"))
+        | {name, status, pipeline_sha: $sha}]')
+else
+  GREPTILE_JOBS='[]'
+fi
+
+GREPTILE_JOB_SUCCESS=$(echo "$GREPTILE_JOBS" \
+  | jq '[.[] | select(.status == "success")] | length')
+GREPTILE_JOB_BLOCKING=$(echo "$GREPTILE_JOBS" \
+  | jq '[.[] | select(.status != "success")] | length')
+
+# 3. If Greptile integrates via MR notes instead of a CI job, require the newest
+#    Greptile note to reference the current head sha and report a clean review.
+GREPTILE_NOTES=$(glab api "projects/:fullpath/merge_requests/<MR_IID>/discussions?per_page=100" \
+  | jq --arg sha "$MR_SHA" '[.[].notes[]
+      | select(.author.username | test("greptile"; "i"))]
+      | sort_by(.updated_at // .created_at)')
+GREPTILE_NOTE_CLEAN=$(echo "$GREPTILE_NOTES" \
+  | jq --arg sha "$MR_SHA" 'if length == 0 then 0
+      elif ((last.body // "") | contains($sha) and test("Confidence Score:[[:space:]]*5/5|Confidence:[[:space:]]*5/5|\\b5/5\\b"; "i") and (test("Prompt To Fix|blocking issue|failed|action required"; "i") | not)) then 1
+      else 0 end')
+
+if [ "$GREPTILE_JOB_SUCCESS" = "0" ] && [ "$GREPTILE_NOTE_CLEAN" = "0" ]; then
+  echo "Blocked: no successful Greptile job or completed-clean current-head Greptile note is tied to MR head $MR_SHA."
+  exit 1
+fi
+
+if [ "$GREPTILE_JOB_BLOCKING" != "0" ]; then
+  echo "Blocked: at least one Greptile job for MR head $MR_SHA did not succeed."
+  exit 1
+fi
+```
+
+Block completion if, for `MR_SHA`, there is (a) no Greptile job or note at all (missing), (b) the newest Greptile job/note is tied to a different sha (stale), or (c) the Greptile job status is not `success`. A completed Greptile result for a different SHA is stale and must block completion.

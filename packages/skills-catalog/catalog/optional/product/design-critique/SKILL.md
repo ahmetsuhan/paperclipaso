@@ -1,6 +1,6 @@
 ---
 name: design-critique
-description: Give a structured product design critique — user job clarity, hierarchy, affordance, error states, accessibility, and consistency — focused on what to change, in what order, and why.
+description: Use when asked for UX feedback or a final design read on a screen, flow, mock, component, or live UI — a prioritized critique of what to change, in what order, and why; not a redesign.
 key: paperclipai/optional/product/design-critique
 recommendedForRoles:
   - designer
@@ -117,5 +117,4 @@ Always include the "strengths to keep" section. It is not flattery — it is sig
 - "I would do it differently" without saying what or why. That is preference, not critique.
 - Long critiques that bury must-fix items under nice-to-haves.
 - Suggesting net-new features under the guise of a critique.
-- Ignoring user context and grading on taste.
 - Treating a critique as approval. State approval explicitly if asked; otherwise critique is feedback, not sign-off.

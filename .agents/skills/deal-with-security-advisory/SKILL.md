@@ -79,7 +79,7 @@ git checkout -b security-fix
 
 Write the patch. Same content standards as any PR:
 
-* It must functionally work — **run tests locally** since CI won't run on the private fork
+* It must functionally work — **run tests locally** since CI won't run on the private fork: targeted tests for the touched code while iterating, then the PR-ready check from `AGENTS.md` (`pnpm -r typecheck`, `pnpm test:run`, `pnpm build`) once before pushing
 * Consider the whole codebase, not just the narrow vulnerability path. A patch that fixes one vector but opens another is worse than no patch
 * Ensure backwards compatibility for the database, or be explicit about what breaks
 * Make sure any UI components still look correct if the fix touches them
@@ -94,7 +94,7 @@ Write the patch. Same content standards as any PR:
 Push your fix to the private fork:
 
 ```
-git add -A
+git add <changed files>   # never pnpm-lock.yaml
 git commit -m "Fix security vulnerability"
 git push origin security-fix
 

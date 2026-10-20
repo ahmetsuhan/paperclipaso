@@ -1,6 +1,6 @@
 ---
 name: review-storybook
-description: Review Paperclip stories for a feature or change using the Storybook catalog, production source, and existing browser tests. Report component, mock, interaction, and visual evidence separately.
+description: Use when reviewing Paperclip Storybook stories for a feature or change — rendering, interactions, visual comparisons, or story/catalog drift against production source.
 ---
 
 # Review Storybook

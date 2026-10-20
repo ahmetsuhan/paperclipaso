@@ -16,6 +16,7 @@ Get a GitHub PR to a fully green check state, or exit with a concrete blocker.
 - Focus on checks for the latest PR head SHA, not old commits.
 - Focus on CI/status checks, not review comments or PR template cleanup.
 - If the user also wants review-comment cleanup, pair this with `check-pr`.
+- Complements `greploop`: Greptile can be perfect while CI is still red.
 
 ## Inputs
 
@@ -197,10 +198,3 @@ When the skill completes, report:
 - fixes made and verification run
 - whether changes were pushed
 - blocker summary if not fully green
-
-## Notes
-
-- This skill is intentionally narrower than `check-pr`: it is a repair loop for
-  PR checks.
-- This skill complements `greploop`: Greptile can be perfect while CI is still
-  red.

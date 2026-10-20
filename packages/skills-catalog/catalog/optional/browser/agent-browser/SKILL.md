@@ -1,6 +1,6 @@
 ---
 name: agent-browser
-description: Drive a real browser to inspect or interact with a web page or app — navigate, take screenshots, read console and network, fill simple forms — for verification tasks, not unattended automation.
+description: Use when verification needs a real browser — JS-rendered or login-gated pages, screenshots, console/network evidence, UI bug repros, or short click-through flows. Supervised verification only, not unattended automation.
 key: paperclipai/optional/browser/agent-browser
 recommendedForRoles:
   - qa
@@ -88,6 +88,5 @@ For a UI bug repro, also record:
 ## Anti-patterns
 
 - Long unsupervised browser sessions that drift from the original task.
-- Scraping behind authentication you do not own.
 - Captioning a screenshot with "looks good" without saying what state was loaded and what selectors confirmed it.
 - Treating a passing screenshot as proof of correctness across viewports you did not actually test.

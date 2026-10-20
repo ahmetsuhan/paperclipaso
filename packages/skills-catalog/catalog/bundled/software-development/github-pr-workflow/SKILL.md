@@ -1,6 +1,6 @@
 ---
 name: github-pr-workflow
-description: Prepare a GitHub pull request from a feature branch — branch hygiene, commit shape, title/body, verification notes, screenshots for UI work, and replies to review comments.
+description: Use when opening a GitHub pull request for finished work, responding to its review comments, or bringing a stale PR back into shape — branch hygiene, title/body, verification evidence, and merge readiness.
 key: paperclipai/bundled/software-development/github-pr-workflow
 recommendedForRoles:
   - engineer
@@ -30,7 +30,7 @@ Ship a PR a reviewer can land without follow-up clarifying questions. The aim is
 
 - Rebase or merge from the target base so the diff is current.
 - Squash WIP commits into reviewable units. Prefer one commit per logical change; do not force one-commit-per-PR if the work is genuinely multi-step.
-- Confirm tests, typecheck, and lint pass locally. Note any deliberate skips in the PR body.
+- Run the tests, typecheck, and lint that cover the changed code (targeted first; full suites only when the repo requires them or the change is broad). Note any deliberate skips in the PR body.
 - Remove debug prints, commented-out code, and `TODO` markers that are not tracked.
 
 ## PR title
@@ -42,7 +42,7 @@ Ship a PR a reviewer can land without follow-up clarifying questions. The aim is
 
 ## PR body
 
-Use this structure:
+If the repository has a PR template, fill in that template instead. Otherwise use this structure:
 
 ```md
 ## Summary
@@ -90,4 +90,3 @@ Skip the `Risk and rollback` section only for clearly trivial PRs (typos, docs).
 - PR description that says "see commits". Reviewers should not need to read the log.
 - Mixing refactor and behavior change in the same PR with no separation in the body.
 - "Address feedback" commits that bundle unrelated edits. One commit per round of feedback is fine; one commit for everything in flight is not.
-- Force-pushing during active review without telling the reviewer.

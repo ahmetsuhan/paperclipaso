@@ -1,6 +1,6 @@
 ---
 name: add-product-e2e-eval
-description: Add or extend a Paperclip full-stack runner E2E workflow, fixture, matcher, or report evidence path for local or Daytona execution.
+description: Use when adding or extending a Paperclip Product E2E eval (full-stack runner E2E) workflow, fixture, matcher, or report evidence path, run locally or on Daytona. Runner protocol evals use add-runner-eval.
 ---
 
 # Add a Product E2E Eval
