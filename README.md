@@ -560,6 +560,8 @@ Telemetry is **enabled by default** and can be disabled with any of the followin
 | CI environments      | Automatically disabled when `CI=true`                   |
 | Config file          | Set `telemetry.enabled: false` in your Paperclip config |
 
+The Apps gallery loads logos for catalog apps without a bundled mark from third-party logo hosts. To keep the browser from contacting those hosts, set `VITE_PAPERCLIP_DISABLE_REMOTE_APP_LOGOS=true` when the UI is built or served by the dev server; affected apps show a letter tile instead.
+
 ## Contributing
 
 We welcome contributions. See the [contributing guide](CONTRIBUTING.md) for details.

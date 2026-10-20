@@ -27,6 +27,48 @@ describe("AppLogo", () => {
     act(() => root.unmount());
     container.remove();
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  it("falls back to a remote logo when no local provider mark exists", async () => {
+    await act(async () => {
+      root.render(<AppLogo name="Acme" logoUrl="https://logos.example.test/acme.svg" />);
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(container.querySelector("img")?.getAttribute("src")).toBe("https://logos.example.test/acme.svg");
+  });
+
+  it("never requests a remote logo when VITE_PAPERCLIP_DISABLE_REMOTE_APP_LOGOS is true", async () => {
+    vi.stubEnv("VITE_PAPERCLIP_DISABLE_REMOTE_APP_LOGOS", "true");
+
+    await act(async () => {
+      root.render(
+        <AppLogo
+          name="Acme"
+          logoUrl="https://logos.example.test/acme.svg"
+          darkLogoUrl="https://logos.example.test/acme-dark.svg"
+        />,
+      );
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(container.querySelector("img")).toBeNull();
+    expect(container.textContent).toBe("A");
+  });
+
+  it("still renders bundled local logo URLs when remote logos are disabled", async () => {
+    vi.stubEnv("VITE_PAPERCLIP_DISABLE_REMOTE_APP_LOGOS", "true");
+
+    await act(async () => {
+      root.render(<AppLogo name="Jira" logoUrl="/brands/apps/jira.svg" />);
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+
+    expect(container.querySelector("img")?.getAttribute("src")).toBe("/brands/apps/jira.svg");
   });
 
   it("renders decorative local light and dark provider marks", async () => {

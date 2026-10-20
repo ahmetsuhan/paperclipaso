@@ -13,6 +13,21 @@ const TILE_COLORS = [
   "bg-(--app-logo-tile-8)",
 ];
 
+// Build-time opt-out for privacy-sensitive installs: when set, the browser
+// never requests third-party logo hosts and same-origin marks still render.
+function remoteLogosDisabled(): boolean {
+  return import.meta.env.VITE_PAPERCLIP_DISABLE_REMOTE_APP_LOGOS === "true";
+}
+
+function isCrossOriginUrl(url: string): boolean {
+  return /^(?:[a-z][a-z0-9+.-]*:)?\/\//i.test(url) && !url.startsWith(`${window.location.origin}/`);
+}
+
+function permittedLogoUrl(url: string | null | undefined): string | null | undefined {
+  if (!url || !remoteLogosDisabled()) return url;
+  return isCrossOriginUrl(url) ? null : url;
+}
+
 function colorFor(seed: string): string {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
@@ -59,12 +74,12 @@ export function AppLogo({
   // chance to resolve this provider. Otherwise the browser requests the
   // remote asset during the first render even when a bundled mark exists.
   const resolvedLogoUrl = localLookupComplete
-    ? localAssets?.light ?? (allowRemoteFallback ? logoUrl : null)
+    ? localAssets?.light ?? (allowRemoteFallback ? permittedLogoUrl(logoUrl) : null)
     : null;
   const resolvedDarkLogoUrl = localLookupComplete
     ? localAssets
       ? localAssets.dark ?? localAssets.light
-      : (allowRemoteFallback ? darkLogoUrl : null)
+      : (allowRemoteFallback ? permittedLogoUrl(darkLogoUrl) : null)
     : null;
   const lightLogoUrlForRender = resolvedLogoUrl && !failedLogoUrls.has(resolvedLogoUrl)
     ? resolvedLogoUrl
